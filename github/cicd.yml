@@ -1,0 +1,29 @@
+name: CICD
+
+on:
+  push:
+    branches: [deploy-to-ec2]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build Project
+        run: nvm clean install -DskipTests
+      - name: Login to Docker hub
+        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+      - name: Build Docker image
+        run: docker build -t gym_planet/gym .
+      - name: Publish image to Docker hub
+        run: docker push gym_planet/gym:latest
+
+  deploy:
+    needs: build
+    runs-on: []

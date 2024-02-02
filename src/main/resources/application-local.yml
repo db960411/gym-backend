@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/postgres
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
+server:
+  port: ${PORT:8080}
+
+verification:
+  url: "http://localhost:4200/verify/"

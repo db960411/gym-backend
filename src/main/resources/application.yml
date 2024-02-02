@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://dpg-ckujf4jamefc738u2fcg-a.frankfurt-postgres.render.com:5432/gym_db_d6a7
+    username: gym_db_d6a7_user
+    password: 29kp0jCJ1EOahjGYXMjmyzGR94NXSXZ7
+    driver-class-name: org.postgresql.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: noreply.gymplanet@gmail.com
+    password: yvcf pjnn gswm oczf
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  stripe:
+    secret-key: sk_test_51NeitKEQK2sno4KoC18hdz4HdpV5nJz7vcbsS976zif7aK3su1CF84QEMv8GQesajzvsoN4QuphmcQysyXoJauVO004L8xptok
+    webhook-key: whsec_83ce88d9036b4e9fab2a70df4ca82eb540b865a780af607442b26876feb34ddc
+  logging:
+    level:
+      org.hibernate.SQL: DEBUG
+  main:
+    allow-circular-references: true
+server:
+  port: ${PORT:10000}
+
+
+verification:
+  url: "https://gym-planet.netlify.app/verify/"
+
+
