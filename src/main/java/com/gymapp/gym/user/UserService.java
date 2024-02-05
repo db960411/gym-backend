@@ -58,10 +58,16 @@ public class UserService {
     }
 
     public String updateUserEmail(@NonNull User user, @NonNull String newEmail) {
-        user.setEmail(newEmail);
-        repo.save(user);
+        User userByEmail = repo.getUserByEmail(newEmail);
 
-        return jwtService.generateToken(user);
+        if (userByEmail == null) {
+            user.setEmail(newEmail);
+            repo.save(user);
+
+            return jwtService.generateToken(user);
+        } else {
+            return null;
+        }
     }
 
 

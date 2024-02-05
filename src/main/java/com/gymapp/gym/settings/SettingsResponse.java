@@ -15,6 +15,7 @@ public class SettingsResponse {
     private String successMessage;
     private String jwtToken;
     private String userLanguage;
+    private String email;
 
     public SettingsResponse(String errorMessage) {
         this.errorMessage = errorMessage;

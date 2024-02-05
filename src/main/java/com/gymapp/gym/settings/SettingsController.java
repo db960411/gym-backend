@@ -52,7 +52,6 @@ public class SettingsController {
 
     @PostMapping("/change-password")
     public ResponseEntity<SettingsResponse> updatePassword(HttpServletRequest request, @RequestBody String newPassword) {
-
         if (newPassword.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

@@ -83,8 +83,16 @@ public class NotificationsService {
             notificationsDto.setCreatedAt(notification.getCreatedAt());
             notificationsDto.setSeen(notification.isSeen());
             notificationsDto.setFriendImageUrl(notification.getFromSocial().getUser().getProfileImageUrl());
-            notificationsDto.setFriendDisplayName(profileService.getProfileDisplayName(notification.getFromSocial().getUser().getEmail()));
             notificationsDto.setFriendEmailAdress(notification.getFromSocial().getUser().getEmail());
+
+            String profileDisplayName = profileService.getProfileDisplayName(notification.getFromSocial().getUser().getEmail());
+
+            if (profileDisplayName != null) {
+                notificationsDto.setFriendDisplayName(profileDisplayName);
+            } else {
+                notificationsDto.setFriendDisplayName(notification.getFromSocial().getUser().getEmail());
+            }
+
             notificationsDtoList.add(notificationsDto);
         });
 

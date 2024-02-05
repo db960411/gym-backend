@@ -58,7 +58,7 @@ public class FriendshipRequestService {
             throw new IllegalArgumentException("One of the users doesn't exist: userSocialId=" + userSocialId + ", friendSocialId=" + friendSocialId);
         }
 
-        Optional<FriendshipRequest> optionalFriendshipRequest = getFriendShipRequestByReceiverAndSender(friendSocial, userSocial);
+        Optional<FriendshipRequest> optionalFriendshipRequest = getFriendShipRequestByReceiverAndSender(userSocial, friendSocial);
 
         if (optionalFriendshipRequest.isEmpty()) {
            throw new IllegalArgumentException("No friend request was found");

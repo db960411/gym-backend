@@ -6,14 +6,11 @@ import com.gymapp.gym.email.EmailService;
 import com.gymapp.gym.plans.plan_progression.PlanProgression;
 import com.gymapp.gym.plans.plan_progression.PlanProgressionDto;
 import com.gymapp.gym.plans.plan_progression.PlanProgressionService;
-import com.gymapp.gym.profile.Profile;
-import com.gymapp.gym.profile.ProfileService;
 import com.gymapp.gym.subscription.Subscription;
 import com.gymapp.gym.subscription.SubscriptionService;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +28,6 @@ public class SettingsService {
     private final SettingsRepository settingsRepository;
     @Autowired
     private final SubscriptionService subscriptionService;
-    @Autowired
-    private final ProfileService profileService;
     @Autowired
     private final PlanProgressionService planProgressionService;
     @Autowired
@@ -52,9 +47,13 @@ public class SettingsService {
         }
 
         String jwtToken = userService.updateUserEmail(user, newEmail);
-        return new SettingsResponse.SettingsResponseBuilder().jwtToken(jwtToken).successMessage("Email updated.").build();
-    }
 
+        if (jwtToken != null) {
+            return new SettingsResponse.SettingsResponseBuilder().jwtToken(jwtToken).email(newEmail).successMessage("Email updated.").build();
+        } else {
+            return new SettingsResponse.SettingsResponseBuilder().errorMessage("Email already taken").build();
+        }
+    }
 
     public SettingsResponse updatePassword(HttpServletRequest request, @NonNull String newPassword) {
         final String email = request.getHeader("Email");
@@ -69,7 +68,6 @@ public class SettingsService {
         return new SettingsResponse.SettingsResponseBuilder().successMessage("Updated user password successfully").build();
     }
 
-
     public SettingsResponse updateLanguage(HttpServletRequest request, @NonNull String language) {
         final String email = request.getHeader("Email");
         User user = userService.getUserByEmail(email);
@@ -78,7 +76,14 @@ public class SettingsService {
             return new SettingsResponse("No user found");
         }
 
-        profileService.updateProfileLanguageForUser(user, language);
+        Settings settings = settingsRepository.getByUserId(user.getId());
+
+        if (settings == null) {
+            return new SettingsResponse("No settings found for this user...");
+        }
+
+        settings.setLanguage(language);
+        settingsRepository.save(settings);
 
         return new SettingsResponse.SettingsResponseBuilder().userLanguage(language).successMessage("Updated user language successfully").build();
     }
@@ -180,9 +185,7 @@ public class SettingsService {
         if (settings == null) {
             User user = userService.getUserByEmail(email);
             Subscription subscription = subscriptionService.getByUserId(user.getId());
-            Profile profile = profileService.getByUserId(user.getId());
-            settings = Settings.builder().receiveEmails(false).user(user).subscription(subscription).profile(profile).build();
-
+            settings = Settings.builder().receiveEmails(false).user(user).subscription(subscription).language("English").build();
             settingsRepository.save(settings);
         }
 
@@ -190,7 +193,6 @@ public class SettingsService {
     }
 
     public Settings getSettingsByUser(User user) {
-
         return settingsRepository.getByUserId(user.getId());
     }
 
@@ -204,6 +206,8 @@ public class SettingsService {
         settingsDto.setVerifiedEmail(settings.subscription.isVerified_email());
         settingsDto.setReceiveEmails(settings.isReceiveEmails());
         settingsDto.setAllowNotifications(settings.isAllowNotifications());
+        settingsDto.setLanguage(settings.getLanguage());
+
         PlanProgression planProgression = planProgressionService.getPlanProgressionByUserId(settings.getUser().getId());
         if (planProgression != null) {
             PlanProgressionDto planProgressionDto = new PlanProgressionDto();
@@ -212,9 +216,6 @@ public class SettingsService {
             settingsDto.setPlanProgressionDto(planProgressionDto);
         }
 
-        if (settings.profile != null) {
-            settingsDto.setLanguage(settings.profile.getLanguage());
-        }
         return settingsDto;
     }
 
