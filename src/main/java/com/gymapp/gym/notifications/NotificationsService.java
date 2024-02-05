@@ -1,5 +1,6 @@
 package com.gymapp.gym.notifications;
 
+import com.gymapp.gym.profile.Profile;
 import com.gymapp.gym.profile.ProfileService;
 import com.gymapp.gym.social.Social;
 import com.gymapp.gym.social.SocialService;
@@ -85,10 +86,10 @@ public class NotificationsService {
             notificationsDto.setFriendImageUrl(notification.getFromSocial().getUser().getProfileImageUrl());
             notificationsDto.setFriendEmailAdress(notification.getFromSocial().getUser().getEmail());
 
-            String profileDisplayName = profileService.getProfileDisplayName(notification.getFromSocial().getUser().getEmail());
+            Profile profile = profileService.getProfile(notification.getFromSocial().getUser().getEmail());
 
-            if (profileDisplayName != null) {
-                notificationsDto.setFriendDisplayName(profileDisplayName);
+            if (profile != null) {
+                notificationsDto.setFriendDisplayName(profile.getDisplayName());
             } else {
                 notificationsDto.setFriendDisplayName(notification.getFromSocial().getUser().getEmail());
             }

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class PlanProgressionDto {
     private int day;
     private Plans plan;
+    private boolean completed;
 
     public PlanProgressionDto(PlanProgression planProgression, int day, Plans plan) {
         this.day = planProgression.getDay();

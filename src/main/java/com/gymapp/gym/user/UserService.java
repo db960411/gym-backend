@@ -1,6 +1,9 @@
 package com.gymapp.gym.user;
 
 import com.gymapp.gym.JWT.JwtService;
+import com.gymapp.gym.profile.Profile;
+import com.gymapp.gym.profile.ProfileDto;
+import com.gymapp.gym.profile.ProfileService;
 import com.gymapp.gym.social.SocialService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
@@ -19,6 +22,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private final JwtService jwtService;
+    @Autowired
+    private ProfileService profileService;
 
     public User getUserByEmail(@NonNull String email) {
         return repo.getUserByEmail(email);
@@ -37,6 +42,13 @@ public class UserService {
         userDto.setLevel(user.getLevel());
         userDto.setRole(user.getRole());
         userDto.setProfileImageUrl(user.getProfileImageUrl());
+
+        Profile profile = profileService.getByUserId(user.getId());
+        if (profile != null) {
+            ProfileDto profileDto = new ProfileDto();
+            profileDto.setDisplayName(profile.getDisplayName());
+            userDto.setProfileDto(profileDto);
+        }
 
         return userDto;
     }
@@ -68,6 +80,23 @@ public class UserService {
         } else {
             return null;
         }
+    }
+
+    public void determineLevelForUser(User user) {
+        if (user == null) {
+            throw new RuntimeException("User is null when trying to determine user level");
+        }
+
+        switch (user.getLevel()) {
+            case BRONZE -> user.setLevel(Level.SILVER);
+            case SILVER -> user.setLevel(Level.GOLD);
+            case GOLD -> user.setLevel(Level.PLATINUM);
+            case PLATINUM -> user.setLevel(Level.DIAMOND);
+            case DIAMOND -> {
+                return;
+            }
+            default -> user.setLevel(Level.BRONZE);
+        };
     }
 
 

@@ -44,8 +44,8 @@ public class ProfileService {
         return userByEmail.getEmail();
     }
 
-    public String getProfileDisplayName(@NonNull String email) {
-        return repository.findByUserEmail(email).getDisplayName();
+    public Profile getProfile(@NonNull String email) {
+        return repository.findByUserEmail(email);
     }
 
     public ProfileResponse profileStatus(@NonNull HttpServletRequest request) {

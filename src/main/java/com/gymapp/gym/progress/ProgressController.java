@@ -30,7 +30,7 @@ public class ProgressController {
     }
 
     @PatchMapping("/edit-progress/{exerciseId}")
-    public ResponseEntity<String> editProgressById(HttpServletRequest request, @PathVariable UUID exerciseId, @RequestBody ProgressDto data) throws IllegalAccessException {
+    public ResponseEntity<ProgressDto> editProgressById(HttpServletRequest request, @PathVariable UUID exerciseId, @RequestBody ProgressDto data) throws IllegalAccessException {
         return progressService.editProgressById(request, exerciseId, data);
     }
 }

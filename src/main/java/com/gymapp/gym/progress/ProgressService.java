@@ -153,7 +153,7 @@ public class ProgressService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<String> editProgressById(HttpServletRequest request, UUID exerciseId, ProgressDto data) throws IllegalAccessException {
+    public ResponseEntity<ProgressDto> editProgressById(HttpServletRequest request, UUID exerciseId, ProgressDto data) throws IllegalAccessException {
         final String email = request.getHeader("Email");
         User user = userService.getUserByEmail(email);
 
@@ -179,6 +179,15 @@ public class ProgressService {
 
         repository.save(progress);
 
+        ProgressDto progressDto = new ProgressDto();
+        progressDto.setId(progress.getId());
+        progressDto.setExerciseType(progress.getExerciseType());
+        progressDto.setSets(progress.getSets());
+        progressDto.setReps(progress.getReps());
+        progressDto.setWeight(progress.getWeight());
+        progressDto.setDistance(progress.getDistance());
+        progressDto.setTime(progress.getTime());
+
         UserAnalytics userAnalytics = new UserAnalytics();
         userAnalytics.setUser(user);
         userAnalytics.setCurrentUserWeight(Double.parseDouble(profileService.getByUserId(user.getId()).getWeight()));
@@ -189,7 +198,7 @@ public class ProgressService {
 
         userAnalyticsService.newUpdatedUserAnalyticsForUser(userAnalytics);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(progressDto);
     }
 
 

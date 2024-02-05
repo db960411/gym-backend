@@ -41,6 +41,29 @@ public class PlansService {
         return new PlansResponse.PlansResponseBuilder().errorMessage("Not on a plan").build();
     }
 
+    public PlansResponse completePlanForUser(HttpServletRequest request) {
+        final String email = request.getHeader("Email");
+        User user = userService.getUserByEmail(email);
+
+        if (user == null) {
+            throw new RuntimeException("User not found when completing plan");
+        }
+
+       PlanProgression userPlanProgression = planProgressionRepository.getByUserId(user.getId());
+
+        if (userPlanProgression == null) {
+            throw new RuntimeException("User is not on a plan when trying to complete one");
+        }
+
+        if (userPlanProgression.getDay() >= 30) {
+            this.userService.determineLevelForUser(user);
+        }
+
+        this.planProgressionRepository.delete(userPlanProgression);
+
+        return new PlansResponse.PlansResponseBuilder().day(userPlanProgression.getDay()).plan(userPlanProgression.getPlan()).successMessage("User completed plan successfully!").build();
+    }
+
     public PlansResponse assignPlanToUser(HttpServletRequest request, @NonNull String selectedPlan) throws UserNotFoundException {
         final String email = request.getHeader("Email");
         User user = userService.getUserByEmail(email);

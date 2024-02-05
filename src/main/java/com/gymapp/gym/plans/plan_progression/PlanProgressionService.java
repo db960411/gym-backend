@@ -40,12 +40,12 @@ public class PlanProgressionService {
 
          PlanProgressionDto planProgressionDto = new PlanProgressionDto();
 
-         if (planProgression.getDay() <= 30) {
+         if (planProgression.getDay() < 30) {
              planProgression.setDay(planProgression.getDay() + 1);
              repository.save(planProgression);
          } else {
-             planProgressionDto.setDay(planProgression.getDay());
-             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(planProgressionDto);
+             planProgressionDto.setCompleted(true);
+             return ResponseEntity.status(HttpStatus.OK).body(planProgressionDto);
          }
 
          planProgressionDto.setDay(planProgression.getDay());

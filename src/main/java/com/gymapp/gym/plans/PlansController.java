@@ -27,5 +27,9 @@ public class PlansController {
         return ResponseEntity.ok(service.checkPlanStatusForUser(request));
     }
 
+    @GetMapping("completePlanForUser")
+    public ResponseEntity<PlansResponse> completePlanForUser(HttpServletRequest request) {
+        return ResponseEntity.ok(service.completePlanForUser(request));
+    }
 
 }
