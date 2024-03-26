@@ -1,12 +1,16 @@
 package com.gymapp.gym.subscription;
 
 import com.gymapp.gym.email.EmailService;
+import com.gymapp.gym.subcriptionEvents.SubscriptionEventService;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +19,8 @@ public class SubscriptionService {
     private UserService userService;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+    @Autowired
+    private SubscriptionEventService subscriptionEventService;
 
     @Autowired
     private EmailService emailService;
@@ -41,6 +47,7 @@ public class SubscriptionService {
             subscription.setSubscriptionType(SubscriptionType.PREMIUM);
             subscription.setOne_time_payment(true);
 
+            subscriptionEventService.addSubscriptionEvent(user);
             subscriptionRepository.save(subscription);
         }
     }
@@ -54,6 +61,7 @@ public class SubscriptionService {
             subscription.setSubscriptionType(SubscriptionType.STANDARD);
             subscription.setOne_time_payment(true);
 
+            subscriptionEventService.addSubscriptionEvent(user);
             subscriptionRepository.save(subscription);
         }
     }
@@ -67,6 +75,7 @@ public class SubscriptionService {
             subscription.setUser(user);
             subscription.setSubscriptionType(SubscriptionType.BASIC);
 
+            subscriptionEventService.addSubscriptionEvent(user);
             subscriptionRepository.save(subscription);
         }
     }
@@ -100,6 +109,5 @@ public class SubscriptionService {
         sub.setOne_time_payment(subscription.isOne_time_payment());
 
         return sub;
-
     }
 }

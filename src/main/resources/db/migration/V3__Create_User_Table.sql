@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS _user (
     password VARCHAR(255) NULL,
     level VARCHAR(255) NULL,
     role VARCHAR(255) NULL,
-    profileImageUrl VARCHAR(255) NULL
+    profileImageUrl VARCHAR(255) NULL,
+    createdAt DATE
 );
 

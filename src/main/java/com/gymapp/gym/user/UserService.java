@@ -13,6 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -47,6 +51,13 @@ public class UserService {
         if (profile != null) {
             ProfileDto profileDto = new ProfileDto();
             profileDto.setDisplayName(profile.getDisplayName());
+            profileDto.setNationality(profile.getNationality());
+            profileDto.setGender(profile.getGender());
+            profileDto.setHeight(profile.getHeight());
+            profileDto.setWeight(profile.getWeight());
+            profileDto.setFitnessGoals(profile.getFitnessGoals());
+            profileDto.setLanguage(profile.getLanguage());
+            profileDto.setDateOfBirth(profile.getDateOfBirth());
             userDto.setProfileDto(profileDto);
         }
 
@@ -110,5 +121,17 @@ public class UserService {
         return repo.getReferenceById(userId);
     }
 
+
+    public int countUserRegistrations(LocalDateTime from, LocalDateTime to) {
+       List<User> listOfRegisteredUsersPastSevenDays = repo.findByCreatedAtBetween(from, to);
+
+       return listOfRegisteredUsersPastSevenDays.size();
+    }
+
+    public int countAllRegisteredUsers() {
+        List<User> allUsers = repo.findAll();
+
+        return allUsers.size();
+    }
 
 }

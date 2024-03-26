@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS news (
     author VARCHAR(255) null,
     category VARCHAR(255) null,
     imageUrl VARCHAR(255) null,
-    createdAt DATE null
+    createdAt DATE null null
 );
 
 INSERT INTO news (id)

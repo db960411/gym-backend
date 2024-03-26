@@ -1,4 +1,4 @@
-package com.gymapp.gym.userAnalytics;
+package com.gymapp.gym.analytics.UserAnalytics;
 
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserService;
@@ -40,7 +40,11 @@ public class UserAnalyticsService {
         userAnalyticsRepository.save(analytics);
     }
 
-    public void newUpdatedUserAnalyticsForUser(UserAnalytics analytics) {
+    public UserAnalytics getByUser(User user) {
+        return userAnalyticsRepository.findByUserId(user.getId());
+    }
+
+    public void updatedUserAnalyticsForUser(UserAnalytics analytics) {
         analytics.setCreatedAt(Date.from(Instant.now()));
         analytics.setModifiedAt(Date.from(Instant.now()));
 
@@ -57,23 +61,12 @@ public class UserAnalyticsService {
         userAnalytics.forEach(ua -> {
             UserAnalyticsDto userAnalyticsDto = new UserAnalyticsDto();
 
-            userAnalyticsDto.setExerciseType(ua.getExerciseType());
-
-            userAnalyticsDto.setInitialUserWeight(ua.getInitialUserWeight());
-            userAnalyticsDto.setCurrentUserWeight(ua.getCurrentUserWeight());
-            userAnalyticsDto.setUserWeightPercentageIncrease(ua.getUserWeightPercentageIncrease());
-
-            userAnalyticsDto.setInitialProgressSets(ua.getInitialProgressSets());
-            userAnalyticsDto.setCurrentProgressSets(ua.getCurrentProgressSets());
-            userAnalyticsDto.setUserProgressSetsPercentageIncrease(ua.getUserProgressSetsPercentageIncrease());
-
-            userAnalyticsDto.setInitialProgressReps(ua.getInitialProgressReps());
-            userAnalyticsDto.setCurrentProgressReps(ua.getCurrentProgressReps());
-            userAnalyticsDto.setUserProgressRepsPercentageIncrease(ua.getUserProgressRepsPercentageIncrease());
-
-            userAnalyticsDto.setInitialProgressWeight(ua.getInitialProgressWeight());
-            userAnalyticsDto.setCurrentProgressWeight(ua.getCurrentProgressWeight());
-            userAnalyticsDto.setUserProgressWeightPercentageIncrease(ua.getUserProgressRepsPercentageIncrease());
+            userAnalyticsDto.setCurrentWeight(ua.getCurrentWeight());
+            userAnalyticsDto.setInitialWeight(ua.getInitialWeight());
+            userAnalyticsDto.setWeightPercentageIncrease(ua.getWeightPercentageIncrease());
+            userAnalyticsDto.setInitialBodyFatPercentage(ua.getInitialBodyFatPercentage());
+            userAnalyticsDto.setCurrentBodyFatPercentage(ua.getCurrentBodyFatPercentage());
+            userAnalyticsDto.setBodyFatPercentageIncrease(ua.getBodyFatPercentageIncrease());
 
             userAnalyticsDtoList.add(userAnalyticsDto);
         });
@@ -81,6 +74,8 @@ public class UserAnalyticsService {
 
         return userAnalyticsDtoList;
     }
+
+
 
 
 }

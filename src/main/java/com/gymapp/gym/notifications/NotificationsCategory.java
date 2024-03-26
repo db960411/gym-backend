@@ -4,4 +4,5 @@ public enum NotificationsCategory {
     SOCIAL,
     PROGRESSION,
     PLAN,
+    ADMIN,
 }

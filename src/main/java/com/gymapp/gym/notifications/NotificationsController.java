@@ -25,4 +25,9 @@ public class NotificationsController {
         return notificationsService.updateVisibility(request, notifications);
     }
 
+    @PostMapping("/createNotification")
+    public ResponseEntity<String> createNotifications(HttpServletRequest request, @RequestBody NotificationsDto notificationForm) {
+        return notificationsService.createGlobalNotification(request, notificationForm);
+    }
+
 }

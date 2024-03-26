@@ -2,8 +2,11 @@ package com.gymapp.gym.notifications;
 
 import com.gymapp.gym.profile.Profile;
 import com.gymapp.gym.profile.ProfileService;
+import com.gymapp.gym.settings.Settings;
+import com.gymapp.gym.settings.SettingsService;
 import com.gymapp.gym.social.Social;
 import com.gymapp.gym.social.SocialService;
+import com.gymapp.gym.user.Role;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserService;
 import com.gymapp.gym.websockets.WebSocketService;
@@ -32,6 +35,8 @@ public class NotificationsService {
     @Autowired
     private ProfileService profileService;
     private Queue<Notifications> notificationQueue = new LinkedList<>();
+    @Autowired
+    private SettingsService settingsService;
 
     public void createNotificationForUserSocial(Social toSocial, Social fromSocial, String title, String text, NotificationsCategory category) {
         if (toSocial == null) {
@@ -60,7 +65,9 @@ public class NotificationsService {
         final String email = request.getHeader("Email");
         User user = userService.getUserByEmail(email);
 
-        if (user == null) {
+        Settings settings = settingsService.getSettingsByUser(user);
+
+        if (!settings.isAllowNotifications()) {
             return Collections.emptyList();
         }
 
@@ -98,12 +105,11 @@ public class NotificationsService {
         });
 
         if (notificationsDtoList.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
 
         return notificationsDtoList;
     }
-
 
     public ResponseEntity<String> updateVisibility(HttpServletRequest request, List<Notifications> notificationsList) {
         final String email = request.getHeader("Email");
@@ -122,6 +128,34 @@ public class NotificationsService {
         return ResponseEntity.ok().build();
     }
 
+    public ResponseEntity<String> createGlobalNotification(HttpServletRequest request, NotificationsDto notificationsDto) {
+        final String email = request.getHeader("Email");
+        User user = userService.getUserByEmail(email);
+        Social adminSocial = socialService.getByUserId(user.getId());
+
+        if (user.getRole() != Role.ADMIN) {
+            throw new RuntimeException("User is null or doesn't have required role!");
+        }
+
+        List<Social> listOfAllSocials = socialService.getAllSocials();
+
+        listOfAllSocials.forEach(social -> {
+            Notifications notifications = new Notifications();
+            notifications.setFromSocial(adminSocial);
+            notifications.setSocial(social);
+            notifications.setCreatedAt(Date.from(Instant.now()));
+            notifications.setSeen(false);
+            notifications.setTitle(notificationsDto.getTitle());
+            notifications.setText(notificationsDto.getText());
+            notifications.setCategory(NotificationsCategory.ADMIN);
+
+            notificationsRepository.save(notifications);
+            notificationQueue.offer(notifications);
+        });
+
+
+        return ResponseEntity.ok("Success!");
+    }
 
     public void addNotificationsToFriendlySendOutQueue(User user, String title, NotificationsCategory category, Date createdAt) {
         Social social = socialService.getByUserId(user.getId());
@@ -166,7 +200,7 @@ public class NotificationsService {
 
     @Scheduled(cron = "0 */2 * * * ?")
     public void sendQueuedEmails() {
-        int batchSize = 5;
+        int batchSize = 10;
         for (int i = 0; i < batchSize; i++) {
             if (notificationQueue.isEmpty()) {
                 break;

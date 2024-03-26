@@ -29,4 +29,8 @@ public class NewsController {
         return ResponseEntity.ok(service.getSpecificNews(blogId));
     }
 
+    @PostMapping("/new-blogpost")
+    public ResponseEntity<NewsResponse> createBlogPost(HttpServletRequest request, @RequestBody NewsResponse newsResponse) {
+        return ResponseEntity.ok(service.createBlogPost(request, newsResponse));
+    }
 }

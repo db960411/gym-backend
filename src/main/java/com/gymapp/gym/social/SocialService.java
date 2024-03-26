@@ -233,6 +233,10 @@ public class SocialService {
         return progressDtoList;
     }
 
+    public List<Social> getAllSocials() {
+        return repository.findAll();
+    }
+
 
     public SocialDto toDto(Social social) {
         if (social == null) {

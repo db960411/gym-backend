@@ -1,4 +1,4 @@
-package com.gymapp.gym.userAnalytics;
+package com.gymapp.gym.analytics.UserAnalytics;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class UserAnalyticsController {
     @Autowired
     private UserAnalyticsService userAnalyticsService;
 
-    @GetMapping("/allbyuser")
+    @GetMapping("/allUserAnalytics")
     public ResponseEntity<List<UserAnalyticsDto>> getAllAnalyticsByUser(HttpServletRequest request) {
         List<UserAnalyticsDto> userAnalytics = userAnalyticsService.getAllByUser(request);
 

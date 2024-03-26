@@ -1,5 +1,6 @@
 package com.gymapp.gym.progress;
 
+import com.gymapp.gym.exerciseType.ExerciseType;
 import lombok.Builder;
 import lombok.Data;
 

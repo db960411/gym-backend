@@ -2,14 +2,12 @@ package com.gymapp.gym.auth;
 
 import com.gymapp.gym.JWT.JwtService;
 import com.gymapp.gym.email.EmailService;
-import com.gymapp.gym.notes.NotesService;
 import com.gymapp.gym.social.SocialService;
 import com.gymapp.gym.subscription.SubscriptionService;
 import com.gymapp.gym.user.Level;
 import com.gymapp.gym.user.Role;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserRepository;
-import com.gymapp.gym.userAnalytics.UserAnalyticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Random;
+import java.time.LocalDateTime;
 
 
 @Service
@@ -37,7 +35,7 @@ public class AuthenticationService {
     private final SocialService socialService;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder().email(request.getEmail().toLowerCase()).password(passwordEncoder.encode(request.getPassword())).role(Role.USER).level(Level.BRONZE).build();
+        var user = User.builder().email(request.getEmail().toLowerCase()).password(passwordEncoder.encode(request.getPassword())).role(Role.USER).level(Level.BRONZE).createdAt(LocalDateTime.now()).build();
 
         if (repository.findUserByEmail(user.getEmail()).isPresent()) {
             return AuthenticationResponse.builder().emailError("This email is already taken, please try another email").build();

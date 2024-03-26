@@ -1,10 +1,10 @@
 package com.gymapp.gym.profile;
 
-import com.gymapp.gym.social.SocialService;
+import com.gymapp.gym.progress.ProgressService;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserRepository;
-import com.gymapp.gym.userAnalytics.UserAnalytics;
-import com.gymapp.gym.userAnalytics.UserAnalyticsService;
+import com.gymapp.gym.analytics.UserAnalytics.UserAnalytics;
+import com.gymapp.gym.analytics.UserAnalytics.UserAnalyticsService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -12,7 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
+
+import static com.gymapp.gym.progress.ProgressService.calculatePercentageIncrease;
 
 @Service
 @RequiredArgsConstructor
@@ -83,7 +87,9 @@ public class ProfileService {
         repository.save(profile);
 
         UserAnalytics userAnalytics = new UserAnalytics();
-        userAnalytics.setInitialUserWeight(Double.parseDouble(profileDto.getWeight()));
+        userAnalytics.setUser(user);
+        userAnalytics.setInitialWeight(profile.getWeight());
+        userAnalytics.setInitialBodyFatPercentage(0);
         userAnalyticsService.createUserAnalyticsForUser(userAnalytics);
 
         return new ProfileResponse(profileDto);
@@ -95,8 +101,58 @@ public class ProfileService {
                     profile.setLanguage(language);
                     repository.save(profile);
                 }
-
         new ProfileResponse(profile);
+    }
+
+    public ProfileDto updateProfile(HttpServletRequest request, ProfileDto profileData) {
+        final String email = request.getHeader("Email");
+        User user = userRepository.getUserByEmail(email);
+
+        if (user == null) {
+            throw new RuntimeException("User null when trying to update profile");
+        }
+
+        Profile profile = getProfile(email);
+
+        if (profile == null) {
+            throw new RuntimeException("Profile null when trying to update profile");
+        }
+
+        if (profileData.getLanguage() != null) {
+            profile.setLanguage(profileData.getLanguage());
+        }
+        if (profileData.getHeight() != 0) {
+            profile.setHeight(profileData.getHeight());
+        }
+        if (profileData.getWeight() != 0) {
+            profile.setWeight(profileData.getWeight());
+        }
+        if (profileData.getDateOfBirth() != null) {
+            profile.setDateOfBirth(profileData.getDateOfBirth());
+        }
+        if (profileData.getDateOfBirth() != null) {
+            profile.setDateOfBirth(profileData.getDateOfBirth());
+        }
+        if (profileData.getFitnessGoals() != null) {
+            profile.setFitnessGoals(profileData.getFitnessGoals());
+        }
+        if (profileData.getDisplayName() != null) {
+            profile.setDisplayName(profileData.getDisplayName());
+        }
+        if (profileData.getNationality() != null) {
+            profile.setNationality(profileData.getNationality());
+        }
+
+        repository.save(profile);
+
+        UserAnalytics userAnalytics = userAnalyticsService.getByUser(user);
+        userAnalytics.setCurrentWeight(profileData.getWeight());
+        userAnalytics.setWeightPercentageIncrease(calculatePercentageIncrease(userAnalytics.getInitialWeight(), profileData.getWeight()));
+        userAnalytics.setModifiedAt(Date.from(Instant.now()));
+
+        userAnalyticsService.updatedUserAnalyticsForUser(userAnalytics);
+
+        return toProfileDto(profile);
     }
 
     public Profile getByUserId(Integer id) {

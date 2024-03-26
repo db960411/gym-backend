@@ -22,4 +22,9 @@ public class ProfileController {
     public ResponseEntity<ProfileResponse> createProfile(@RequestBody ProfileDto profileForm, HttpServletRequest httpServletRequest) {
             return ResponseEntity.ok(service.createProfile(httpServletRequest, profileForm));
     }
+
+    @PostMapping("/update-profile")
+    public ResponseEntity<ProfileDto> updateProfile(@RequestBody ProfileDto profileForm, HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(service.updateProfile(httpServletRequest, profileForm));
+    }
 }

@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ProfileDto {
     private String displayName;
-    private String height;
-    private String weight;
+    private double height;
+    private double weight;
     private String language;
     private String nationality;
     private String gender;
