@@ -2,6 +2,11 @@ package com.gymapp.gym.auth;
 
 import com.gymapp.gym.JWT.JwtService;
 import com.gymapp.gym.email.EmailService;
+import com.gymapp.gym.notifications.Notifications;
+import com.gymapp.gym.notifications.NotificationsCategory;
+import com.gymapp.gym.notifications.NotificationsService;
+import com.gymapp.gym.settings.SettingsService;
+import com.gymapp.gym.social.Social;
 import com.gymapp.gym.social.SocialService;
 import com.gymapp.gym.subscription.SubscriptionService;
 import com.gymapp.gym.user.Level;
@@ -33,6 +38,10 @@ public class AuthenticationService {
     private final EmailService emailService;
     @Autowired
     private final SocialService socialService;
+    @Autowired
+    private NotificationsService notificationsService;
+    @Autowired
+    private SettingsService settingsService;
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder().email(request.getEmail().toLowerCase()).password(passwordEncoder.encode(request.getPassword())).role(Role.USER).level(Level.BRONZE).createdAt(LocalDateTime.now()).build();
@@ -43,12 +52,16 @@ public class AuthenticationService {
 
         repository.save(user);
         subscriptionService.subscribeToBasic(user.getEmail());
+        settingsService.createSettingsForUser(user);
 
         String welcomeText = "Welcome aboard! 🌟 We're absolutely delighted to have you here! 🥳";
         String welcomeSubject = "Welcome to gym planet!🥳";
 
         emailService.addToEmailQueue(user.getEmail(), welcomeSubject, welcomeText);
         socialService.createSocialForUser(user);
+        Social social = socialService.getByUserId(user.getId());
+
+        notificationsService.createNotificationForUserSocial(social, null, "Hello and welcome!", "Please check your email! 👋", NotificationsCategory.ADMIN);
 
         return AuthenticationResponse.builder().successMessage("Registered user successfully").email(user.getEmail()).build();
     }

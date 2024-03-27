@@ -185,11 +185,21 @@ public class SettingsService {
         if (settings == null) {
             User user = userService.getUserByEmail(email);
             Subscription subscription = subscriptionService.getByUserId(user.getId());
-            settings = Settings.builder().receiveEmails(false).user(user).subscription(subscription).language("English").build();
+            settings = Settings.builder().receiveEmails(false).allowNotifications(true).user(user).subscription(subscription).language("English").build();
             settingsRepository.save(settings);
         }
 
         return toSettingsDto(settings);
+    }
+
+    public void createSettingsForUser(User user) {
+        Settings settings = settingsRepository.getByUserEmail(user.getEmail());
+
+        if (settings == null) {
+            Subscription subscription = subscriptionService.getByUserId(user.getId());
+            settings = Settings.builder().receiveEmails(false).allowNotifications(true).subscription(subscription).user(user).language("English").build();
+            settingsRepository.save(settings);
+        }
     }
 
     public Settings getSettingsByUser(User user) {

@@ -90,15 +90,16 @@ public class NotificationsService {
             notificationsDto.setCategory(notification.getCategory());
             notificationsDto.setCreatedAt(notification.getCreatedAt());
             notificationsDto.setSeen(notification.isSeen());
-            notificationsDto.setFriendImageUrl(notification.getFromSocial().getUser().getProfileImageUrl());
-            notificationsDto.setFriendEmailAdress(notification.getFromSocial().getUser().getEmail());
+            if (notification.getFromSocial() != null) {
+                notificationsDto.setFriendImageUrl(notification.getFromSocial().getUser().getProfileImageUrl());
+                notificationsDto.setFriendEmailAdress(notification.getFromSocial().getUser().getEmail());
+                Profile profile = profileService.getProfile(notification.getFromSocial().getUser().getEmail());
 
-            Profile profile = profileService.getProfile(notification.getFromSocial().getUser().getEmail());
-
-            if (profile != null) {
-                notificationsDto.setFriendDisplayName(profile.getDisplayName());
-            } else {
-                notificationsDto.setFriendDisplayName(notification.getFromSocial().getUser().getEmail());
+                if (profile != null) {
+                    notificationsDto.setFriendDisplayName(profile.getDisplayName());
+                } else {
+                    notificationsDto.setFriendDisplayName(notification.getFromSocial().getUser().getEmail());
+                }
             }
 
             notificationsDtoList.add(notificationsDto);
