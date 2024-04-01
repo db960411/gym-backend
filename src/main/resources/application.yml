@@ -37,6 +37,6 @@ server:
 
 
 verification:
-  url: https://active-planet.netlify.app/verify"
+  url: https://active-planet.netlify.app/verify/
 
 
