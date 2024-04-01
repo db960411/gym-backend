@@ -9,7 +9,6 @@ import com.gymapp.gym.social.SocialService;
 import com.gymapp.gym.user.Role;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserService;
-import com.gymapp.gym.websockets.WebSocketService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

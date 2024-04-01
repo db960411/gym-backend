@@ -105,7 +105,7 @@ public class ProgressService {
         List<Progress> allByProfile =  repository.getAllByProfileId(profile.getId());
 
         for (Progress pr : allByProfile) {
-            if (pr.getExerciseType().equals(formData.getExerciseType())) {
+            if (pr.getExerciseType().getName().equals(formData.getExerciseType())) {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
             }
         }

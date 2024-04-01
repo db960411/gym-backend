@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DATASOURCE_URL=jdbc:postgresql://db:5432/postgrass
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=postgrass
+      - POSTGRES_USER=
+      - POSTGRES_PASSWORD=password

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-ckujf4jamefc738u2fcg-a.frankfurt-postgres.render.com:5432/gym_db_d6a7
-    username: gym_db_d6a7_user
-    password: 29kp0jCJ1EOahjGYXMjmyzGR94NXSXZ7
+    url: postgres://danielbernhardt:FEntx9ZSXZIXORZrTnID8rLSwFHWDim3@dpg-co5cqqgl6cac73de0jg0-a.frankfurt-postgres.render.com/activeplanet
+    username: danielbernhardt
+    password: FEntx9ZSXZIXORZrTnID8rLSwFHWDim3
     driver-class-name: org.postgresql.Driver
   mail:
     host: smtp.gmail.com
@@ -37,6 +37,6 @@ server:
 
 
 verification:
-  url: "https://gym-planet.netlify.app/verify/"
+  url: https://active-planet.netlify.app/verify"
 
 

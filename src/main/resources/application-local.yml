@@ -2,8 +2,9 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5433/postgrass
     username:
-    password:
+    password: password
     driver-class-name: org.postgresql.Driver
+
 server:
   port: ${PORT:8080}
 
