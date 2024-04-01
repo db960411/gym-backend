@@ -127,7 +127,7 @@ public class ProgressService {
         progressDto.setReps(progress.getReps());
         progressDto.setExerciseType(progress.getExerciseType());
 
-        notificationsService.addNotificationsToFriendlySendOutQueue(user, progress.getExerciseType().getName(), NotificationsCategory.PROGRESSION, Date.from(Instant.now()));
+        notificationsService.addNotificationsToFriendlySendOutQueue(user, user + "added" + progress.getExerciseType().getName() + "progress", NotificationsCategory.PROGRESSION, Date.from(Instant.now()));
 
         ExerciseAnalytics exerciseAnalytics = getExerciseAnalytics(progress, user);
 
