@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DATASOURCE_URL=jdbc:postgresql://db:5432/postgrass
+      - DATASOURCE_URL=jdbc:postgresql://dpg-co5cqqgl6cac73de0jg0-a.frankfurt-postgres.render.com/activeplanet
 
   db:
     image: postgres:latest
