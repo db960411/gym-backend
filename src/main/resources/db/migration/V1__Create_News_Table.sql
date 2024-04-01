@@ -7,7 +7,3 @@ CREATE TABLE IF NOT EXISTS news (
     imageUrl VARCHAR(255) null,
     createdAt DATE null null
 );
-
-INSERT INTO news (id)
-SELECT 1
-WHERE NOT EXISTS (SELECT 1 FROM news WHERE id = 1);
