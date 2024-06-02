@@ -9,7 +9,14 @@ CREATE TABLE IF NOT EXISTS userAnalytics (
     currentBodyFatPercentage DOUBLE PRECISION NULL,
     initialBodyFatPercentage DOUBLE PRECISION NULL,
     bodyFatPercentageIncrease DOUBLE PRECISION NULL,
-
+    initialBMI DOUBLE PRECISION NULL DEFAULT 0,
+    currentBMI DOUBLE PRECISION NULL DEFAULT 0,
+    workoutDaysDone DOUBLE PRECISION NULL DEFAULT 0,
+    initialLongestWorkout DOUBLE PRECISION NULL DEFAULT 0,
+    currentLongestWorkout DOUBLE PRECISION NULL DEFAULT 0,
+    initialSlowWaveSleep DOUBLE PRECISION NULL DEFAULT 0,
+    currentSlowWaveSleep DOUBLE PRECISION NULL DEFAULT 0,
+    currentSlowWaveSleep DOUBLE PRECISION DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES _user(id)
 );
 

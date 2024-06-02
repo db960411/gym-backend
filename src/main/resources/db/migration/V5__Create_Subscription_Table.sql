@@ -6,3 +6,4 @@ CREATE TABLE IF NOT EXISTS subscription (
     recurring_payment BOOLEAN,
     one_time_payment BOOLEAN
 );
+CREATE INDEX IF NOT EXISTS idx_user_id ON social("user_id");

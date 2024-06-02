@@ -24,7 +24,6 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-
     public String generateToken(UserDetails userDetails) {
         long expirationTimeMillis = System.currentTimeMillis() + 30 * 60 * 10000;
         Date expirationDate = new Date(expirationTimeMillis);

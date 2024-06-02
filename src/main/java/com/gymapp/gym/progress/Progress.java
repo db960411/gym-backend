@@ -34,5 +34,7 @@ public class Progress {
     private double weight;
     private double distance;
     private double time;
+    private Double steps;
+    private Double heartRate;
 
 }

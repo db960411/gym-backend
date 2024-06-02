@@ -35,4 +35,15 @@ public class NewsLetterService {
         return new ResponseEntity<>("User signed up to news letter.", HttpStatus.CREATED);
     }
 
+    public ResponseEntity<Boolean> getNewsLetterStatusForUser(HttpServletRequest request) throws IllegalAccessException {
+        final String email = request.getHeader("Email");
+        User user = userService.getUserByEmail(email);
+
+        if (user == null) {
+            throw new IllegalAccessException("User null");
+        }
+
+        return ResponseEntity.ok(repository.existsByUserId(user.getId()));
+    }
+
 }

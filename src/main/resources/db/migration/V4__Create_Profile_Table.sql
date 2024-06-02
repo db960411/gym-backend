@@ -11,3 +11,4 @@ CREATE TABLE IF NOT EXISTS profile (
     fitness_goals VARCHAR(255) NULL,
     FOREIGN KEY (user_id) REFERENCES _user(id)
 );
+CREATE INDEX IF NOT EXISTS idx_user_id ON social("user_id");

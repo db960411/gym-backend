@@ -1,5 +1,7 @@
 package com.gymapp.gym.settings;
 
+import com.gymapp.gym.auth.AuthenticationRequest;
+import com.gymapp.gym.auth.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,4 +65,10 @@ public class SettingsController {
     public ResponseEntity<SettingsResponse> verifyEmailAddress(HttpServletRequest request) throws IllegalAccessException {
         return ResponseEntity.ok(settingsService.sendVerificationEmailForUser(request));
     }
+
+    @PatchMapping("/allow-smart-ui")
+    public ResponseEntity<SettingsResponse> changeSmartUISettings(HttpServletRequest request, @RequestBody boolean selectedValue) throws IllegalAccessException {
+        return ResponseEntity.ok(settingsService.changeSmartUISettings(request, selectedValue));
+    }
+
 }

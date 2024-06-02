@@ -1,6 +1,8 @@
 package com.gymapp.gym.settings;
 
 
+import com.gymapp.gym.auth.AuthenticationRequest;
+import com.gymapp.gym.auth.AuthenticationResponse;
 import com.gymapp.gym.checkoutToken.CheckoutTokenService;
 import com.gymapp.gym.email.EmailService;
 import com.gymapp.gym.plans.plan_progression.PlanProgression;
@@ -15,7 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -167,7 +172,7 @@ public class SettingsService {
            throw new IllegalAccessException("This user has no settings associated");
         }
 
-        final int verificationCode = checkoutTokenService.createCheckoutTokenForUser(user).getToken();
+        final int verificationCode = checkoutTokenService.getOrCreateCheckoutTokenForUser(user, 15).getToken();
         final String mailSubject = "Verify your email";
         final String mailText = "Click the link below to verify your email please\n" + verificationUrl + verificationCode;
 
@@ -178,6 +183,30 @@ public class SettingsService {
         return new SettingsResponse.SettingsResponseBuilder().successMessage("Email verification email sent successfully!").build();
     }
 
+    public SettingsResponse changeSmartUISettings(HttpServletRequest request, boolean selectedValue) throws IllegalAccessException {
+        final String email = request.getHeader("Email");
+        User user = userService.getUserByEmail(email);
+
+        if (user == null) {
+            throw new IllegalAccessException("No user found");
+        }
+
+        Settings settings = settingsRepository.getByUserId(user.getId());
+
+        if (settings == null) {
+            throw new IllegalAccessException("This user has no settings associated");
+        }
+
+        if (selectedValue == settings.isSmartUI()) {
+            return new SettingsResponse.SettingsResponseBuilder().errorMessage("User has selected already existing value").build();
+        }
+
+        settings.setSmartUI(selectedValue);
+        settingsRepository.save(settings);
+
+        return new SettingsResponse.SettingsResponseBuilder().successMessage("Updated footer preferences").build();
+    }
+
     public SettingsDto getOrCreateSettingsByUser(HttpServletRequest request) {
         final String email = request.getHeader("Email");
         Settings settings = settingsRepository.getByUserEmail(email);
@@ -185,7 +214,7 @@ public class SettingsService {
         if (settings == null) {
             User user = userService.getUserByEmail(email);
             Subscription subscription = subscriptionService.getByUserId(user.getId());
-            settings = Settings.builder().receiveEmails(false).allowNotifications(true).user(user).subscription(subscription).language("English").build();
+            settings = Settings.builder().receiveEmails(false).allowNotifications(true).smartUI(false).user(user).subscription(subscription).language("English").build();
             settingsRepository.save(settings);
         }
 
@@ -217,6 +246,7 @@ public class SettingsService {
         settingsDto.setReceiveEmails(settings.isReceiveEmails());
         settingsDto.setAllowNotifications(settings.isAllowNotifications());
         settingsDto.setLanguage(settings.getLanguage());
+        settingsDto.setSmartUI(settings.isSmartUI());
 
         PlanProgression planProgression = planProgressionService.getPlanProgressionByUserId(settings.getUser().getId());
         if (planProgression != null) {
@@ -228,7 +258,6 @@ public class SettingsService {
 
         return settingsDto;
     }
-
 }
 
 

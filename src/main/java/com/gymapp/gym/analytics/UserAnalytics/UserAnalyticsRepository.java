@@ -10,7 +10,7 @@ import java.util.UUID;
 @Repository
 public interface UserAnalyticsRepository extends JpaRepository<UserAnalytics, UUID> {
 
-    List<UserAnalytics> findAllByUserId(int userId);
+    UserAnalytics findAllByUserId(int userId);
 
     UserAnalytics findByUserId(Integer userId);
 

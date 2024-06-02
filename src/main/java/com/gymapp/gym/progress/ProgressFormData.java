@@ -13,4 +13,6 @@ public class ProgressFormData {
     private double weight;
     private double distance;
     private double time;
+    private double steps;
+    private double heartRate;
 }

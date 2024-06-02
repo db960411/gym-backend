@@ -79,6 +79,8 @@ public class ProgressService {
             progressDto.setDistance(progress.getDistance());
             progressDto.setTime(progress.getTime());
             progressDto.setId(progress.getId());
+            progressDto.setSteps(progress.getSteps());
+            progressDto.setHeartRate(progress.getHeartRate());
             progressDtoList.add(progressDto);
         }
         return progressDtoList;
@@ -126,6 +128,10 @@ public class ProgressService {
         progressDto.setSets(progress.getSets());
         progressDto.setReps(progress.getReps());
         progressDto.setExerciseType(progress.getExerciseType());
+        progressDto.setDistance(progress.getDistance());
+        progressDto.setTime(progress.getTime());
+        progressDto.setSteps(progress.getSteps());
+        progressDto.setHeartRate(progress.getHeartRate());
 
         notificationsService.addNotificationsToFriendlySendOutQueue(user, user + "added" + progress.getExerciseType().getName() + "progress", NotificationsCategory.PROGRESSION, Date.from(Instant.now()));
 
@@ -145,6 +151,8 @@ public class ProgressService {
         exerciseAnalytics.setInitialReps(progress.getReps());
         exerciseAnalytics.setInitialSets(progress.getSets());
         exerciseAnalytics.setInitialWeight(progress.getWeight());
+        exerciseAnalytics.setDistance(progress.getDistance());
+        exerciseAnalytics.setTime(progress.getTime());
         return exerciseAnalytics;
     }
 
@@ -204,6 +212,9 @@ public class ProgressService {
         progressDto.setWeight(progress.getWeight());
         progressDto.setDistance(progress.getDistance());
         progressDto.setTime(progress.getTime());
+        progressDto.setSteps(progress.getSteps());
+        progressDto.setHeartRate(progress.getHeartRate());
+
 
         // TODO add distance etc
         ExerciseAnalytics exerciseAnalytics = exerciseAnalyticsService.findByUserAndExerciseType(user, progress.getExerciseType());
@@ -240,6 +251,8 @@ public class ProgressService {
         progress.setWeight(formData.getWeight());
         progress.setDistance(formData.getDistance());
         progress.setTime(formData.getTime());
+        progress.setSteps(formData.getSteps());
+        progress.setHeartRate(formData.getHeartRate());
         return progress;
     }
 

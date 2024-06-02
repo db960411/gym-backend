@@ -11,14 +11,4 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailController {
     @Autowired
     private EmailService emailService;
-
-    @PostMapping
-    public String sendEmail(@RequestParam String to, @RequestParam String subject, @RequestParam String text) {
-        if (to == null || subject == null || text == null ){
-            return "Missing parameters to send email";
-        }
-        emailService.sendEmail(to, subject, text);
-        return "Email sent correctly";
-    }
-
 }

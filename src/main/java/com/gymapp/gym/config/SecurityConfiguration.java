@@ -26,7 +26,7 @@
                     .csrf()
                     .disable()
                     .authorizeHttpRequests()
-                    .requestMatchers("/api/v1/auth/**", "/api/v1/**")
+                    .requestMatchers("/api/v1/**", "/ws")
                     .permitAll()
                     .anyRequest()
                     .authenticated()

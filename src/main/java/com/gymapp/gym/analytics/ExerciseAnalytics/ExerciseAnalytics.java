@@ -50,6 +50,11 @@ public class ExerciseAnalytics {
     @Column(name = "weightPercentageIncrease")
     private double weightPercentageIncrease;
 
+    @Column(name = "distance")
+    private double distance;
+    @Column(name = "time")
+    private double time;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

@@ -1,5 +1,6 @@
 package com.gymapp.gym.analytics.UserAnalytics;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,11 @@ public class UserAnalyticsDto {
   private double currentBodyFatPercentage;
   private double initialBodyFatPercentage;
   private double bodyFatPercentageIncrease;
+  private double initialBMI;
+  private double currentBMI;
+  private int workOutDaysDone;
+  private double initialLongestWorkout;
+  private double currentLongestWorkout;
+  private double initialSlowWaveSleep;
+  private double currentSlowWaveSleep;
 }

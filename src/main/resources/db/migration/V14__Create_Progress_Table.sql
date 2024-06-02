@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS progress (
     reps DOUBLE PRECISION,
     weight DOUBLE PRECISION,
     distance DOUBLE PRECISION,
+    steps DOUBLE PRECISION,
+    heartRate DOUBLE PRECISION,
     time DOUBLE PRECISION,
 
     FOREIGN KEY (profile_id) REFERENCES profile (id),

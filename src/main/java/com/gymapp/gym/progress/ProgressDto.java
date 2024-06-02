@@ -20,4 +20,6 @@ public class ProgressDto {
   private double weight;
   private double distance;
   private double time;
+  private Double Steps;
+  private Double heartRate;
 }

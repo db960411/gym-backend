@@ -21,4 +21,5 @@ public class SettingsDto {
     private PlanProgressionDto planProgressionDto;
     private Plans plan;
     private boolean allowNotifications;
+    private boolean smartUI;
 }

@@ -35,5 +35,7 @@ public class Settings {
 
     private boolean receiveEmails;
 
+    @Column(name = "smart_ui")
+    private boolean smartUI;
 
 }

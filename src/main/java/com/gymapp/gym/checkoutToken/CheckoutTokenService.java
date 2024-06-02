@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -20,15 +21,23 @@ public class CheckoutTokenService {
     @Autowired
     private SubscriptionService subscriptionService;
 
-    public CheckoutTokenDto createCheckoutTokenForUser(User user) {
+    public CheckoutTokenDto getOrCreateCheckoutTokenForUser(User user, int expiresAfterMinutes) {
         if (user == null) {
             throw new IllegalArgumentException("User is null");
+        }
+
+        CheckoutToken existingCheckoutToken = repository.findFirstByUserOrderByCreatedAtDesc(user);
+
+        if (existingCheckoutToken != null) {
+            if (existingCheckoutToken.getExpiresAt().isAfter(LocalDateTime.now().plusMinutes(5))) {
+                return CheckoutTokenDto.builder().token(existingCheckoutToken.getToken()).build();
+            }
         }
 
         CheckoutToken checkoutToken = new CheckoutToken();
         checkoutToken.setUser(user);
         checkoutToken.setCreatedAt(LocalDateTime.now());
-        checkoutToken.setExpiresAt(checkoutToken.getCreatedAt().plusHours(12));
+        checkoutToken.setExpiresAt(checkoutToken.getCreatedAt().plusMinutes(expiresAfterMinutes));
         checkoutToken.setToken(authenticationCode());
 
         repository.save(checkoutToken);
@@ -62,6 +71,20 @@ public class CheckoutTokenService {
         }
 
         return CheckoutTokenDto.builder().success(true).build();
+    }
+
+    public User getUserFromCheckoutToken(int tokenId) {
+        CheckoutToken checkoutToken = repository.getByToken(tokenId);
+
+        if (checkoutToken == null) {
+            throw new IllegalArgumentException("Token ID provided is wrong");
+        }
+
+        if (checkoutToken.getExpiresAt().isAfter(LocalDateTime.now())) {
+            return checkoutToken.getUser();
+        }
+
+        return null;
     }
 
 

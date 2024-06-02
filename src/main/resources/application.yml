@@ -36,7 +36,10 @@ server:
   port: ${PORT:10000}
 
 
+
 verification:
   url: https://active-planet.netlify.app/verify/
+resetPassword:
+  url: http://localhost:4200/reset-password/
 
 

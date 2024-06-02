@@ -18,6 +18,8 @@ public class CheckoutToken {
     private User user;
 
     private int token;
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 }

@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS exerciseAnalytics (
     initialWeight DOUBLE PRECISION null,
     currentWeight DOUBLE PRECISION null,
     weightPercentageIncrease DOUBLE PRECISION null,
+    distance DOUBLE PRECISION null,
+    time DOUBLE PRECISION null,
     user_id int,
 
     FOREIGN KEY (exercise_type_id) REFERENCES exercise_type (id),

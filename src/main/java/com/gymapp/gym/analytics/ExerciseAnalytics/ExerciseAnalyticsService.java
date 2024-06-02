@@ -40,7 +40,9 @@ public class ExerciseAnalyticsService {
     }
 
     public void delete(ExerciseAnalytics exerciseAnalytics) {
-        exerciseAnalyticsRepository.deleteById(exerciseAnalytics.getId());
+        if (exerciseAnalytics != null) {
+            exerciseAnalyticsRepository.delete(exerciseAnalytics);
+        }
     }
 
     public List<ExerciseAnalyticsDto> getAllByUser(HttpServletRequest request) {
@@ -52,7 +54,6 @@ public class ExerciseAnalyticsService {
         }
 
         List<ExerciseAnalytics> exerciseAnalyticsList = exerciseAnalyticsRepository.findAllByUser(user);
-
 
         return getExerciseAnalyticsDtoList(exerciseAnalyticsList);
     }
@@ -74,6 +75,9 @@ public class ExerciseAnalyticsService {
             exerciseAnalyticsDto.setInitialWeight(exerciseAnalytics.getInitialWeight());
             exerciseAnalyticsDto.setCurrentWeight(exerciseAnalytics.getCurrentWeight());
             exerciseAnalyticsDto.setWeightPercentageIncrease(exerciseAnalytics.getWeightPercentageIncrease());
+
+            exerciseAnalyticsDto.setTime(exerciseAnalytics.getTime());
+            exerciseAnalyticsDto.setDistance(exerciseAnalytics.getDistance());
 
             exerciseAnalyticsDtos.add(exerciseAnalyticsDto);
         }

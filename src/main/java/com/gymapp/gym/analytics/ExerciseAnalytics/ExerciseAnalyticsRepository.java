@@ -16,4 +16,6 @@ public interface ExerciseAnalyticsRepository extends JpaRepository<ExerciseAnaly
 
     List<ExerciseAnalytics> findAllByUser(User user);
 
+    void deleteIfExistsById(UUID id);
+
 }

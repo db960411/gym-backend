@@ -20,4 +20,6 @@ public class ExerciseAnalyticsDto {
     private double repsPercentageIncrease;
     private double setsPercentageIncrease;
     private double weightPercentageIncrease;
+    private double distance;
+    private double time;
 }

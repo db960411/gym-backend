@@ -37,6 +37,20 @@ public class UserAnalytics {
     private double initialBodyFatPercentage;
     @Column(name = "bodyFatPercentageIncrease")
     private double bodyFatPercentageIncrease;
+    @Column(name = "initial_BMI")
+    private double initialBMI;
+    @Column(name = "current_BMI")
+    private double currentBMI;
+    @Column(name = "workoutDaysDone")
+    private int workOutDaysDone;
+    @Column(name = "initial_longestWorkOut")
+    private double initialLongestWorkout;
+    @Column(name = "current_LongestWorkOut")
+    private double currentLongestWorkout;
+    @Column(name = "initial_slowWaveSleep")
+    private double initialSlowWaveSleep;
+    @Column(name = "current_slowWaveSleep")
+    private double currentSlowWaveSleep;
 
     @OneToOne
     @JoinColumn(name = "user_id")
