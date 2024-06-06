@@ -121,6 +121,19 @@ public class ProgressService {
         progress.setProfile(profile);
         repository.save(progress);
 
+        ProgressDto progressDto = getProgressDto(progress);
+
+        notificationsService.addNotificationsToFriendlySendOutQueue(user, user + "added" + progress.getExerciseType().getName() + "progress", NotificationsCategory.PROGRESSION, Date.from(Instant.now()));
+
+        ExerciseAnalytics exerciseAnalytics = getExerciseAnalytics(progress, user);
+
+        exerciseAnalyticsService.createExerciseAnalyticsForUser(exerciseAnalytics);
+
+        return ResponseEntity.ok().body(progressDto);
+    }
+
+    @NotNull
+    private static ProgressDto getProgressDto(Progress progress) {
         ProgressDto progressDto = new ProgressDto();
         progressDto.setId(progress.getId());
         progressDto.setDistance(progress.getDistance());
@@ -132,14 +145,7 @@ public class ProgressService {
         progressDto.setTime(progress.getTime());
         progressDto.setSteps(progress.getSteps());
         progressDto.setHeartRate(progress.getHeartRate());
-
-        notificationsService.addNotificationsToFriendlySendOutQueue(user, user + "added" + progress.getExerciseType().getName() + "progress", NotificationsCategory.PROGRESSION, Date.from(Instant.now()));
-
-        ExerciseAnalytics exerciseAnalytics = getExerciseAnalytics(progress, user);
-
-        exerciseAnalyticsService.createExerciseAnalyticsForUser(exerciseAnalytics);
-
-        return ResponseEntity.ok().body(progressDto);
+        return progressDto;
     }
 
     @NotNull
