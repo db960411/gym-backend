@@ -18,11 +18,15 @@ public class UserAnalyticsDto {
   private double currentBodyFatPercentage;
   private double initialBodyFatPercentage;
   private double bodyFatPercentageIncrease;
-  private double initialBMI;
   private double currentBMI;
+  private double initialBMI;
+  private double BMIPercentageIncrease;
   private int workOutDaysDone;
-  private double initialLongestWorkout;
   private double currentLongestWorkout;
-  private double initialSlowWaveSleep;
+  private double initialLongestWorkout;
+  private double longestWorkOutPercentageIncrease;
   private double currentSlowWaveSleep;
+  private double initialSlowWaveSleep;
+  private double slowWaveSleepIncrease;
+
 }

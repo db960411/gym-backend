@@ -204,7 +204,7 @@ public class SettingsService {
         settings.setSmartUI(selectedValue);
         settingsRepository.save(settings);
 
-        return new SettingsResponse.SettingsResponseBuilder().successMessage("Updated footer preferences").build();
+        return new SettingsResponse.SettingsResponseBuilder().successMessage("Updated UI preference.").build();
     }
 
     public SettingsDto getOrCreateSettingsByUser(HttpServletRequest request) {

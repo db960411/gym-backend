@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.gymapp.gym.progress.ProgressService.calculatePercentageIncrease;
+
 @Service
 public class UserAnalyticsService {
 
@@ -125,11 +127,14 @@ public class UserAnalyticsService {
         userAnalyticsDto.setBodyFatPercentageIncrease(ua.getBodyFatPercentageIncrease());
         userAnalyticsDto.setInitialBMI(ua.getInitialBMI());
         userAnalyticsDto.setCurrentBMI(ua.getCurrentBMI());
+        userAnalyticsDto.setBMIPercentageIncrease(calculatePercentageIncrease(ua.getInitialBMI(), ua.getCurrentBMI()));
         userAnalyticsDto.setWorkOutDaysDone(ua.getWorkOutDaysDone());
         userAnalyticsDto.setInitialLongestWorkout(ua.getInitialLongestWorkout());
         userAnalyticsDto.setCurrentLongestWorkout(ua.getCurrentLongestWorkout());
+        userAnalyticsDto.setLongestWorkOutPercentageIncrease(calculatePercentageIncrease(ua.getInitialLongestWorkout(), ua.getCurrentLongestWorkout()));
         userAnalyticsDto.setInitialSlowWaveSleep(ua.getInitialSlowWaveSleep());
         userAnalyticsDto.setCurrentSlowWaveSleep(ua.getCurrentSlowWaveSleep());
+        userAnalyticsDto.setSlowWaveSleepIncrease(calculatePercentageIncrease(ua.getInitialSlowWaveSleep(), ua.getCurrentSlowWaveSleep()));
         return userAnalyticsDto;
     }
 

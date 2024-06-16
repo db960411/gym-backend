@@ -241,7 +241,7 @@ public class ProgressService {
         double difference = currentValue - initialValue;
 
         // Calculate the percentage increase
-        return (difference / initialValue) * 100;
+        return Math.floor((difference / initialValue) * 100);
     }
 
     public List<Progress> getAllProgressByProfileId(int id) {

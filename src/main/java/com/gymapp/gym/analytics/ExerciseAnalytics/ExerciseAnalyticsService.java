@@ -15,6 +15,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gymapp.gym.progress.ProgressService.calculatePercentageIncrease;
+
 @Service
 public class ExerciseAnalyticsService {
     @Autowired
@@ -82,7 +84,7 @@ public class ExerciseAnalyticsService {
             exerciseAnalyticsDto.setCurrentWeight(exerciseAnalytics.getCurrentWeight());
 
             if (exerciseAnalytics.getWeightPercentageIncrease() > 0) {
-            exerciseAnalyticsDto.setWeightPercentageIncrease(exerciseAnalytics.getWeightPercentageIncrease());
+            exerciseAnalyticsDto.setWeightPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialWeight(), exerciseAnalytics.getCurrentWeight()));
             }
 
             exerciseAnalyticsDto.setTime(exerciseAnalytics.getTime());
