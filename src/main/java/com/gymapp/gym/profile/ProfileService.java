@@ -89,14 +89,14 @@ public class ProfileService {
         UserAnalytics userAnalytics = new UserAnalytics();
         userAnalytics.setUser(user);
         userAnalytics.setInitialWeight(profile.getWeight());
-        userAnalytics.setInitialBodyFatPercentage(0);
+        userAnalytics.setInitialBodyFatPercentage(null);
         userAnalytics.setInitialBMI(userAnalyticsService.calculateBMI(profile.getWeight(),profile.getHeight()));
-        userAnalytics.setCurrentBMI(0);
+        userAnalytics.setCurrentBMI(null);
         userAnalytics.setWorkOutDaysDone(0);
-        userAnalytics.setCurrentLongestWorkout(0);
-        userAnalytics.setInitialLongestWorkout(0);
-        userAnalytics.setInitialSlowWaveSleep(0);
-        userAnalytics.setCurrentSlowWaveSleep(0);
+        userAnalytics.setCurrentLongestWorkout(null);
+        userAnalytics.setInitialLongestWorkout(null);
+        userAnalytics.setInitialSlowWaveSleep(null);
+        userAnalytics.setCurrentSlowWaveSleep(null);
 
         userAnalyticsService.createUserAnalyticsForUser(userAnalytics);
 
