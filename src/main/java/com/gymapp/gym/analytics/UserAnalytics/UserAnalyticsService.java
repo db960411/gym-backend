@@ -121,7 +121,7 @@ public class UserAnalyticsService {
         UserAnalyticsDto userAnalyticsDto = new UserAnalyticsDto();
         userAnalyticsDto.setCurrentWeight(ua.getCurrentWeight());
         userAnalyticsDto.setInitialWeight(ua.getInitialWeight());
-        userAnalyticsDto.setWeightPercentageIncrease(ua.getWeightPercentageIncrease());
+        userAnalyticsDto.setWeightPercentageIncrease(calculatePercentageIncrease(ua.getInitialWeight(), ua.getCurrentWeight()));
         userAnalyticsDto.setInitialBodyFatPercentage(ua.getInitialBodyFatPercentage());
         userAnalyticsDto.setCurrentBodyFatPercentage(ua.getCurrentBodyFatPercentage());
         userAnalyticsDto.setBodyFatPercentageIncrease(ua.getBodyFatPercentageIncrease());
@@ -137,8 +137,4 @@ public class UserAnalyticsService {
         userAnalyticsDto.setSlowWaveSleepIncrease(calculatePercentageIncrease(ua.getInitialSlowWaveSleep(), ua.getCurrentSlowWaveSleep()));
         return userAnalyticsDto;
     }
-
-
-
-
 }
