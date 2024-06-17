@@ -15,11 +15,11 @@ import java.util.UUID;
 public class ProgressDto {
   private UUID id;
   private ExerciseType exerciseType;
-  private double sets;
-  private double reps;
-  private double weight;
-  private double distance;
-  private double time;
+  private Double sets;
+  private Double reps;
+  private Double weight;
+  private Double distance;
+  private Double time;
   private Double Steps;
   private Double heartRate;
 }
