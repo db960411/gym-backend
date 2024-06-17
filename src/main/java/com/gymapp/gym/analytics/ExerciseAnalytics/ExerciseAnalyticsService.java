@@ -68,31 +68,17 @@ public class ExerciseAnalyticsService {
             exerciseAnalyticsDto.setExerciseTypeName(exerciseAnalytics.getExerciseTypeName());
             exerciseAnalyticsDto.setInitialSets(exerciseAnalytics.getInitialSets());
             exerciseAnalyticsDto.setCurrentSets(exerciseAnalytics.getCurrentSets());
-
-            if (exerciseAnalytics.getSetsPercentageIncrease() > 0) {
-                exerciseAnalyticsDto.setSetsPercentageIncrease(exerciseAnalytics.getSetsPercentageIncrease());
-            }
-
+            exerciseAnalyticsDto.setSetsPercentageIncrease(exerciseAnalytics.getSetsPercentageIncrease());
             exerciseAnalyticsDto.setInitialReps(exerciseAnalytics.getInitialReps());
             exerciseAnalyticsDto.setCurrentReps(exerciseAnalytics.getCurrentReps());
-
-            if (exerciseAnalytics.getRepsPercentageIncrease() > 0) {
             exerciseAnalyticsDto.setRepsPercentageIncrease(exerciseAnalytics.getRepsPercentageIncrease());
-            }
-
             exerciseAnalyticsDto.setInitialWeight(exerciseAnalytics.getInitialWeight());
             exerciseAnalyticsDto.setCurrentWeight(exerciseAnalytics.getCurrentWeight());
-
-            if (exerciseAnalytics.getWeightPercentageIncrease() > 0) {
             exerciseAnalyticsDto.setWeightPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialWeight(), exerciseAnalytics.getCurrentWeight()));
-            }
-
-            exerciseAnalyticsDto.setTime(exerciseAnalytics.getTime());
             exerciseAnalyticsDto.setDistance(exerciseAnalytics.getDistance());
-
+            exerciseAnalyticsDto.setTime(exerciseAnalytics.getTime());
             exerciseAnalyticsDtos.add(exerciseAnalyticsDto);
         }
-
 
         return exerciseAnalyticsDtos;
     }

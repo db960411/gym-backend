@@ -10,16 +10,16 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ExerciseAnalyticsDto {
-    private Double currentReps;
-    private Double initialReps;
-    private Double repsPercentageIncrease;
-    private Double currentSets;
-    private Double initialSets;
-    private Double setsPercentageIncrease;
-    private Double currentWeight;
-    private Double initialWeight;
-    private Double weightPercentageIncrease;
+    private double currentReps;
+    private double initialReps;
+    private double repsPercentageIncrease;
+    private double currentSets;
+    private double initialSets;
+    private double setsPercentageIncrease;
+    private double currentWeight;
+    private double initialWeight;
+    private double weightPercentageIncrease;
     private String exerciseTypeName;
-    private Double distance;
-    private Double time;
+    private double distance;
+    private double time;
 }

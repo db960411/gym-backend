@@ -30,30 +30,30 @@ public class ExerciseAnalytics {
     private ExerciseType exerciseType;
     private String exerciseTypeName;
     @Column(name = "initialReps")
-    private Double initialReps;
+    private double initialReps;
     @Column(name = "currentReps")
-    private Double currentReps;
+    private double currentReps;
     @Column(name = "repsPercentageIncrease")
-    private Double repsPercentageIncrease;
+    private double repsPercentageIncrease;
 
     @Column(name = "initialSets")
-    private Double initialSets;
+    private double initialSets;
     @Column(name = "currentSets")
-    private Double currentSets;
+    private double currentSets;
     @Column(name = "setsPercentageIncrease")
-    private Double setsPercentageIncrease;
+    private double setsPercentageIncrease;
 
     @Column(name = "initialWeight")
-    private Double initialWeight;
+    private double initialWeight;
     @Column(name = "currentWeight")
-    private Double currentWeight;
+    private double currentWeight;
     @Column(name = "weightPercentageIncrease")
-    private Double weightPercentageIncrease;
+    private double weightPercentageIncrease;
 
     @Column(name = "distance")
-    private Double distance;
+    private double distance;
     @Column(name = "time")
-    private Double time;
+    private double time;
 
     @OneToOne
     @JoinColumn(name = "user_id")
