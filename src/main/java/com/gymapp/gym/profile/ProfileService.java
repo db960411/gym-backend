@@ -89,14 +89,14 @@ public class ProfileService {
         UserAnalytics userAnalytics = new UserAnalytics();
         userAnalytics.setUser(user);
         userAnalytics.setInitialWeight(profile.getWeight());
-        userAnalytics.setInitialBodyFatPercentage(null);
+        userAnalytics.setInitialBodyFatPercentage(0);
         userAnalytics.setInitialBMI(userAnalyticsService.calculateBMI(profile.getWeight(),profile.getHeight()));
-        userAnalytics.setCurrentBMI(null);
+        userAnalytics.setCurrentBMI(0);
         userAnalytics.setWorkOutDaysDone(0);
-        userAnalytics.setCurrentLongestWorkout(null);
-        userAnalytics.setInitialLongestWorkout(null);
-        userAnalytics.setInitialSlowWaveSleep(null);
-        userAnalytics.setCurrentSlowWaveSleep(null);
+        userAnalytics.setCurrentLongestWorkout(0);
+        userAnalytics.setInitialLongestWorkout(0);
+        userAnalytics.setInitialSlowWaveSleep(0);
+        userAnalytics.setCurrentSlowWaveSleep(0);
 
         userAnalyticsService.createUserAnalyticsForUser(userAnalytics);
 
@@ -154,7 +154,7 @@ public class ProfileService {
         repository.save(profile);
 
         UserAnalytics userAnalytics = userAnalyticsService.getByUser(user);
-        userAnalytics.setCreatedAt(Date.from(Instant.now()));
+        userAnalytics.setModifiedAt(Date.from(Instant.now()));
         userAnalytics.setCurrentWeight(profileData.getWeight());
         userAnalytics.setWeightPercentageIncrease(calculatePercentageIncrease(userAnalytics.getInitialWeight(), profileData.getWeight()));
         userAnalytics.setCurrentBMI(userAnalyticsService.calculateBMI(profile.getWeight(), profile.getHeight()));

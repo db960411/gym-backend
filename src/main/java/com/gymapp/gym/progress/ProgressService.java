@@ -237,8 +237,8 @@ public class ProgressService {
     }
 
     public static Double calculatePercentageIncrease(Double initialValue, Double currentValue) {
-        if (initialValue == null || currentValue == null) {
-            return null; // or return a default value, like 0.0
+        if (initialValue == 0 || currentValue == 0) {
+            return 0.0;
         }
         // Calculate the difference between current value and initial value
         double difference = currentValue - initialValue;

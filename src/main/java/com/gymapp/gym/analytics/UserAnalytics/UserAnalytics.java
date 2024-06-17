@@ -26,31 +26,33 @@ public class UserAnalytics {
     private Date modifiedAt;
 
     @Column(name = "currentWeight")
-    private Double currentWeight;
+    private double currentWeight;
     @Column(name = "initialWeight")
-    private Double initialWeight;
+    private double initialWeight;
     @Column(name = "weightPercentageIncrease")
-    private Double weightPercentageIncrease;
+    private double weightPercentageIncrease;
     @Column(name = "currentBodyFatPercentage")
-    private Double currentBodyFatPercentage;
+    private double currentBodyFatPercentage;
     @Column(name = "initialBodyFatPercentage")
-    private Double initialBodyFatPercentage;
+    private double initialBodyFatPercentage;
     @Column(name = "bodyFatPercentageIncrease")
-    private Double bodyFatPercentageIncrease;
+    private double bodyFatPercentageIncrease;
     @Column(name = "initial_BMI")
-    private Double initialBMI;
+    private double initialBMI;
     @Column(name = "current_BMI")
-    private Double currentBMI;
+    private double currentBMI;
+    @Column(name = "BMI_percentageIncrease")
+    private double BMIPercentageIncrease;
     @Column(name = "workoutDaysDone")
     private int workOutDaysDone;
     @Column(name = "initial_longestWorkOut")
-    private Double initialLongestWorkout;
+    private double initialLongestWorkout;
     @Column(name = "current_LongestWorkOut")
-    private Double currentLongestWorkout;
+    private double currentLongestWorkout;
     @Column(name = "initial_slowWaveSleep")
-    private Double initialSlowWaveSleep;
+    private double initialSlowWaveSleep;
     @Column(name = "current_slowWaveSleep")
-    private Double currentSlowWaveSleep;
+    private double currentSlowWaveSleep;
 
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -12,21 +12,21 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserAnalyticsDto {
-  private Double currentWeight;
-  private Double initialWeight;
-  private Double weightPercentageIncrease;
-  private Double currentBodyFatPercentage;
-  private Double initialBodyFatPercentage;
-  private Double bodyFatPercentageIncrease;
-  private Double currentBMI;
-  private Double initialBMI;
-  private Double BMIPercentageIncrease;
+  private double currentWeight;
+  private double initialWeight;
+  private double weightPercentageIncrease;
+  private double currentBodyFatPercentage;
+  private double initialBodyFatPercentage;
+  private double bodyFatPercentageIncrease;
+  private double currentBMI;
+  private double initialBMI;
+  private double BMIPercentageIncrease;
   private int workOutDaysDone;
-  private Double currentLongestWorkout;
-  private Double initialLongestWorkout;
-  private Double longestWorkOutPercentageIncrease;
-  private Double currentSlowWaveSleep;
-  private Double initialSlowWaveSleep;
-  private Double slowWaveSleepIncrease;
+  private double currentLongestWorkout;
+  private double initialLongestWorkout;
+  private double longestWorkOutPercentageIncrease;
+  private double currentSlowWaveSleep;
+  private double initialSlowWaveSleep;
+  private double slowWaveSleepIncrease;
 
 }
