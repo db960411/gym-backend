@@ -59,7 +59,7 @@ public class ProgressService {
         Profile profile = profileService.getByUserId(user.getId());
 
         if (profile == null) {
-            return Collections.emptyList();
+            throw new IllegalAccessException();
         }
 
         List<Progress> progressList = repository.findByProfileId(profile.getId());
@@ -236,9 +236,13 @@ public class ProgressService {
         return ResponseEntity.ok(progressDto);
     }
 
-    public static Double calculatePercentageIncrease(Double initialValue, Double currentValue) {
+    public static double calculatePercentageIncrease(double initialValue, double currentValue) {
         if (initialValue == 0 || currentValue == 0) {
-            return 0.0;
+            return 0;
+        }
+
+        if (initialValue == currentValue) {
+            return 0;
         }
         // Calculate the difference between current value and initial value
         double difference = currentValue - initialValue;

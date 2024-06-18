@@ -16,7 +16,9 @@ public class ProgressController {
 
     @GetMapping
     public ResponseEntity<List<ProgressDto>> getAllByUser(HttpServletRequest request) throws IllegalAccessException {
-        return ResponseEntity.ok(progressService.getByProfile(request));
+        List<ProgressDto> byProfile = progressService.getByProfile(request);
+
+        return ResponseEntity.ok(byProfile);
     }
 
     @PostMapping("/add-progress")

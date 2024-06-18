@@ -1,8 +1,11 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/postgrass
-    username:
-    password:
+    url: jdbc:postgresql://dpg-co5cqqgl6cac73de0jg0-a.frankfurt-postgres.render.com/activeplanet
+    username: danielbernhardt
+    password: FEntx9ZSXZIXORZrTnID8rLSwFHWDim3
+    #url: jdbc:postgresql://localhost:5433/postgrass
+    # username:
+    # password:
     driver-class-name: org.postgresql.Driver
 
 server:
