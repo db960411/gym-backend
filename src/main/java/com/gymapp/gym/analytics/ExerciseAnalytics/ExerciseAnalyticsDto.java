@@ -22,4 +22,6 @@ public class ExerciseAnalyticsDto {
     private String exerciseTypeName;
     private double distance;
     private double time;
+    private double steps;
+    private double BPM;
 }

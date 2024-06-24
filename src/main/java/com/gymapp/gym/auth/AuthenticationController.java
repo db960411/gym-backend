@@ -30,6 +30,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<String> refreshToken(@RequestBody TokenRefreshRequest request) {
+        return ResponseEntity.ok(service.resendJWTToken(request));
+    }
+
     @PostMapping("/send-reset-password")
     public ResponseEntity<AuthenticationResponse> resetPassword(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(service.sendResetPasswordEmail(request));

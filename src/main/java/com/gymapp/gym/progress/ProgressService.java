@@ -207,9 +207,32 @@ public class ProgressService {
         progress.setWeight(data.getWeight());
         progress.setDistance(data.getDistance());
         progress.setTime(data.getTime());
+        progress.setHeartRate(data.getHeartRate());
+        progress.setSteps(data.getSteps());
 
         repository.save(progress);
 
+        ProgressDto progressDto = getProgress(progress);
+
+        // TODO add distance etc
+        ExerciseAnalytics exerciseAnalytics = exerciseAnalyticsService.findByUserAndExerciseType(user, progress.getExerciseType());
+        exerciseAnalytics.setCurrentReps(progress.getReps());
+        exerciseAnalytics.setRepsPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialReps(), data.getReps()));
+        exerciseAnalytics.setCurrentSets(progress.getSets());
+        exerciseAnalytics.setSetsPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialSets(), data.getSets()));
+        exerciseAnalytics.setCurrentWeight(progress.getWeight());
+        exerciseAnalytics.setWeightPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialWeight(), data.getWeight()));
+        exerciseAnalytics.setTime(progress.getTime());
+        exerciseAnalytics.setBPM(progress.getHeartRate());
+        exerciseAnalytics.setSteps(progress.getSteps());
+
+        exerciseAnalyticsService.updateExerciseAnalytics(exerciseAnalytics);
+
+        return ResponseEntity.ok(progressDto);
+    }
+
+    @NotNull
+    private ProgressDto getProgress(Progress progress) {
         ProgressDto progressDto = new ProgressDto();
         progressDto.setId(progress.getId());
         progressDto.setExerciseType(progress.getExerciseType());
@@ -220,20 +243,7 @@ public class ProgressService {
         progressDto.setTime(progress.getTime());
         progressDto.setSteps(progress.getSteps());
         progressDto.setHeartRate(progress.getHeartRate());
-
-
-        // TODO add distance etc
-        ExerciseAnalytics exerciseAnalytics = exerciseAnalyticsService.findByUserAndExerciseType(user, progress.getExerciseType());
-        exerciseAnalytics.setCurrentReps(progress.getReps());
-        exerciseAnalytics.setRepsPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialReps(), data.getReps()));
-        exerciseAnalytics.setCurrentSets(progress.getSets());
-        exerciseAnalytics.setSetsPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialSets(), data.getSets()));
-        exerciseAnalytics.setCurrentWeight(progress.getWeight());
-        exerciseAnalytics.setWeightPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialWeight(), data.getWeight()));
-
-        exerciseAnalyticsService.updateExerciseAnalytics(exerciseAnalytics);
-
-        return ResponseEntity.ok(progressDto);
+        return progressDto;
     }
 
     public static double calculatePercentageIncrease(double initialValue, double currentValue) {

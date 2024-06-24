@@ -1,10 +1,8 @@
 package com.gymapp.gym.auth;
 
 import com.gymapp.gym.JWT.JwtService;
-import com.gymapp.gym.checkoutToken.CheckoutToken;
 import com.gymapp.gym.checkoutToken.CheckoutTokenService;
 import com.gymapp.gym.email.EmailService;
-import com.gymapp.gym.notifications.Notifications;
 import com.gymapp.gym.notifications.NotificationsCategory;
 import com.gymapp.gym.notifications.NotificationsService;
 import com.gymapp.gym.settings.SettingsService;
@@ -12,7 +10,6 @@ import com.gymapp.gym.social.Social;
 import com.gymapp.gym.social.SocialService;
 import com.gymapp.gym.subscription.SubscriptionService;
 import com.gymapp.gym.user.*;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,6 +87,11 @@ public class AuthenticationService {
         } catch (AuthenticationException ex) {
             return AuthenticationResponse.builder().errorMessage("Authentication failed").build();
         }
+    }
+
+    public String resendJWTToken(TokenRefreshRequest tokenRefreshRequest) {
+        var user = repository.findUserByEmail(tokenRefreshRequest.getEmail()).orElseThrow();
+        return jwtService.generateToken(user);
     }
 
     public AuthenticationResponse sendResetPasswordEmail(AuthenticationRequest request) {

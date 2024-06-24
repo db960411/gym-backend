@@ -77,6 +77,8 @@ public class ExerciseAnalyticsService {
             exerciseAnalyticsDto.setWeightPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialWeight(), exerciseAnalytics.getCurrentWeight()));
             exerciseAnalyticsDto.setDistance(exerciseAnalytics.getDistance());
             exerciseAnalyticsDto.setTime(exerciseAnalytics.getTime());
+            exerciseAnalyticsDto.setBPM(exerciseAnalytics.getBPM());
+            exerciseAnalyticsDto.setSteps(exerciseAnalytics.getSteps());
             exerciseAnalyticsDtos.add(exerciseAnalyticsDto);
         }
 

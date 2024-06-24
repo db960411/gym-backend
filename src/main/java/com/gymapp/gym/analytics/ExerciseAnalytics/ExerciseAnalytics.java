@@ -54,6 +54,10 @@ public class ExerciseAnalytics {
     private double distance;
     @Column(name = "time")
     private double time;
+    @Column(name = "BPM")
+    private double BPM;
+    @Column(name = "steps")
+    private double steps;
 
     @OneToOne
     @JoinColumn(name = "user_id")
