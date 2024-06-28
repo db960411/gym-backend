@@ -1,5 +1,6 @@
 package com.gymapp.gym.analytics.UserAnalytics;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class UserAnalyticsDto {
   private double bodyFatPercentageIncrease;
   private double currentBMI;
   private double initialBMI;
+  @JsonProperty("BMI Percentage Increase")
   private double BMIPercentageIncrease;
   private int workOutDaysDone;
   private double currentLongestWorkout;
