@@ -90,6 +90,6 @@ COPY --from=extract build/target/extracted/application/ ./
 EXPOSE 8080
 
 # Set the environment variable for the datasource URL
-ENV SPRING_DATASOURCE_URL jdbc:postgresql://dpg-co5cqqgl6cac73de0jg0-a.frankfurt-postgres.render.com/activeplanet
+ENV SPRING_DATASOURCE_URL jdbc:postgresql://dpg-crca1vi3esus739brtig-a.frankfurt-postgres.render.com/fitsync_jx4r
 
 ENTRYPOINT [ "java", "org.springframework.boot.loader.JarLauncher" ]
