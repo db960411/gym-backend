@@ -31,4 +31,7 @@ public class PlanProgression {
     private Plans plan;
 
     private int day;
+
+    private boolean completed;
+    private boolean active;
 }

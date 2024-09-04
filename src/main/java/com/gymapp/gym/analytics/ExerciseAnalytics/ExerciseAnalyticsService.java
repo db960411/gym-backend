@@ -1,8 +1,6 @@
 package com.gymapp.gym.analytics.ExerciseAnalytics;
 
 import com.gymapp.gym.exerciseType.ExerciseType;
-import com.gymapp.gym.progress.Progress;
-import com.gymapp.gym.progress.ProgressDto;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +13,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gymapp.gym.progress.ProgressService.calculatePercentageIncrease;
+import static com.gymapp.gym.progress.ProgressService.calculateIncrease;
 
 @Service
 public class ExerciseAnalyticsService {
@@ -65,16 +63,17 @@ public class ExerciseAnalyticsService {
         List<ExerciseAnalyticsDto> exerciseAnalyticsDtos = new ArrayList<>();
         for (ExerciseAnalytics exerciseAnalytics: exerciseAnalyticsList) {
             ExerciseAnalyticsDto exerciseAnalyticsDto = new ExerciseAnalyticsDto();
-            exerciseAnalyticsDto.setExerciseTypeName(exerciseAnalytics.getExerciseTypeName());
+            exerciseAnalyticsDto.setExerciseTypeName(exerciseAnalytics.getExerciseType().getName());
+            exerciseAnalyticsDto.setExerciseTypeCategory(exerciseAnalytics.getExerciseType().getCategory());
             exerciseAnalyticsDto.setInitialSets(exerciseAnalytics.getInitialSets());
             exerciseAnalyticsDto.setCurrentSets(exerciseAnalytics.getCurrentSets());
-            exerciseAnalyticsDto.setSetsPercentageIncrease(exerciseAnalytics.getSetsPercentageIncrease());
+            exerciseAnalyticsDto.setSetsIncrease(exerciseAnalytics.getSetsIncrease());
             exerciseAnalyticsDto.setInitialReps(exerciseAnalytics.getInitialReps());
             exerciseAnalyticsDto.setCurrentReps(exerciseAnalytics.getCurrentReps());
-            exerciseAnalyticsDto.setRepsPercentageIncrease(exerciseAnalytics.getRepsPercentageIncrease());
+            exerciseAnalyticsDto.setRepsIncrease(exerciseAnalytics.getRepsIncrease());
             exerciseAnalyticsDto.setInitialWeight(exerciseAnalytics.getInitialWeight());
             exerciseAnalyticsDto.setCurrentWeight(exerciseAnalytics.getCurrentWeight());
-            exerciseAnalyticsDto.setWeightPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialWeight(), exerciseAnalytics.getCurrentWeight()));
+            exerciseAnalyticsDto.setWeightIncrease(calculateIncrease(exerciseAnalytics.getInitialWeight(), exerciseAnalytics.getCurrentWeight()));
             exerciseAnalyticsDto.setDistance(exerciseAnalytics.getDistance());
             exerciseAnalyticsDto.setTime(exerciseAnalytics.getTime());
             exerciseAnalyticsDto.setBPM(exerciseAnalytics.getBPM());

@@ -1,9 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-co5cqqgl6cac73de0jg0-a.frankfurt-postgres.render.com/activeplanet
+    url: jdbc:postgresql://dpg-cq1fvk5ds78s73aio6t0-a.frankfurt-postgres.render.com/activeplanet_qfmn
     username: danielbernhardt
-    password: FEntx9ZSXZIXORZrTnID8rLSwFHWDim3
+    password: wdrIP8qwtPAsCrj9bK33E5WoYID0rQqI
     driver-class-name: org.postgresql.Driver
+    hikari:
+      auto-commit: false
+  flyway:
+    baseline-on-migrate: true
   mail:
     host: smtp.gmail.com
     port: 587
@@ -17,11 +21,14 @@ spring:
             enable: true
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+      ddl-auto: update
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          lob:
+            non-contextual: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   stripe:
@@ -30,8 +37,15 @@ spring:
   logging:
     level:
       org.hibernate.SQL: DEBUG
+      org.hibernate.type: TRACE
+      org.postgresql: DEBUG
   main:
     allow-circular-references: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      enabled: true
 server:
   port: ${PORT:10000}
 
@@ -40,6 +54,6 @@ server:
 verification:
   url: https://active-planet.netlify.app/verify/
 resetPassword:
-  url: http://localhost:4200/reset-password/
-
-
+  url: http://active-planet.netlify.app/reset-password/
+DECODE_SECRET_KEY:
+  value: "dDRCUU1kSzI3WX5uQ3MoRDQpYWVUVDVJoeisraFBuJng="

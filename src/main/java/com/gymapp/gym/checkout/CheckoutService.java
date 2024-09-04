@@ -37,8 +37,6 @@ public class CheckoutService {
     @Value("${spring.stripe.secret-key}")
     private String stripeSecretKey;
 
-
-
     @PostConstruct
     public void init() {
         Stripe.apiKey = stripeSecretKey;

@@ -6,4 +6,6 @@ public interface PlanProgressionRepository extends JpaRepository<PlanProgression
 
     PlanProgression getByUserId(Integer id);
 
+    PlanProgression getByUserIdAndActive(Integer id, boolean active);
+
 }

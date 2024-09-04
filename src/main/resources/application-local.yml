@@ -1,12 +1,9 @@
 spring:
   datasource:
-   # url: jdbc:postgresql://dpg-co5cqqgl6cac73de0jg0-a.frankfurt-postgres.render.com/activeplanet
-   # username: danielbernhardt
-   # password: FEntx9ZSXZIXORZrTnID8rLSwFHWDim3
-  url: jdbc:postgresql://localhost:5433/postgrass
-  username:
-  password:
-  driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/postgrass
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
 
 server:
   port: ${PORT:8080}
@@ -15,8 +12,11 @@ verification:
   url: "http://localhost:4200/verify/"
 resetPassword:
   url: "http://localhost:4200/reset-password/"
+DECODE_SECRET_KEY:
+  value: "dDRCUU1kSzI3WX5uQ3MoRDQpYWVUVDVJoeisraFBuJng="
 
 logging:
   level:
-    org.springframework.security.messaging.web.socket: DEBUG
-    org.springframework.web.socket.server: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
+    org.postgresql: DEBUG

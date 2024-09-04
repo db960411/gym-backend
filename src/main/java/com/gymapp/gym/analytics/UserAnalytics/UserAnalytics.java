@@ -29,20 +29,20 @@ public class UserAnalytics {
     private double currentWeight;
     @Column(name = "initialWeight")
     private double initialWeight;
-    @Column(name = "weightPercentageIncrease")
-    private double weightPercentageIncrease;
-    @Column(name = "currentBodyFatPercentage")
-    private double currentBodyFatPercentage;
-    @Column(name = "initialBodyFatPercentage")
-    private double initialBodyFatPercentage;
-    @Column(name = "bodyFatPercentageIncrease")
-    private double bodyFatPercentageIncrease;
+    @Column(name = "weightIncrease")
+    private double weightIncrease;
+    @Column(name = "currentBodyFat")
+    private double currentBodyFat;
+    @Column(name = "initialBodyFat")
+    private double initialBodyFat;
+    @Column(name = "bodyFatIncrease")
+    private double bodyFatIncrease;
     @Column(name = "initial_BMI")
     private double initialBMI;
     @Column(name = "current_BMI")
     private double currentBMI;
-    @Column(name = "BMI_percentageIncrease")
-    private double BMIPercentageIncrease;
+    @Column(name = "BMI_Increase")
+    private double BMIIncrease;
     @Column(name = "workoutDaysDone")
     private int workOutDaysDone;
     @Column(name = "initial_longestWorkOut")

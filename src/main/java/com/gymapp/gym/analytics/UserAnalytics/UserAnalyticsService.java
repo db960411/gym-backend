@@ -9,11 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-import static com.gymapp.gym.progress.ProgressService.calculatePercentageIncrease;
+import static com.gymapp.gym.progress.ProgressService.calculateIncrease;
 
 @Service
 public class UserAnalyticsService {
@@ -23,7 +21,7 @@ public class UserAnalyticsService {
     @Autowired
     private UserAnalyticsRepository userAnalyticsRepository;
 
-    public UserAnalyticsDto getAllByUser(HttpServletRequest request) {
+    public List<UserAnalyticsDto> getAllByUser(HttpServletRequest request) {
         final String email = request.getHeader("Email");
         User user = userService.getUserByEmail(email);
 
@@ -31,9 +29,10 @@ public class UserAnalyticsService {
             throw new RuntimeException("User can't be null when fetching user analytics data");
         }
 
-       UserAnalytics userAnalytics = userAnalyticsRepository.findAllByUserId(user.getId());
+       UserAnalytics userAnalytics = userAnalyticsRepository.findByUserId(user.getId());
 
         return toDto(userAnalytics);
+
     }
 
     public void createUserAnalyticsForUser(UserAnalytics analytics) {
@@ -43,7 +42,7 @@ public class UserAnalyticsService {
         userAnalyticsRepository.save(analytics);
     }
 
-    public UserAnalyticsDto updateUserAnalyticsForUser(HttpServletRequest request, UserAnalyticsDto userAnalyticsDto) {
+    public List<UserAnalyticsDto> updateUserAnalyticsForUser(HttpServletRequest request, UserAnalyticsDto userAnalyticsDto) {
         final String email = request.getHeader("Email");
         User user = userService.getUserByEmail(email);
 
@@ -97,11 +96,11 @@ public class UserAnalyticsService {
         if (userAnalyticsDto.getInitialSlowWaveSleep() != 0) {
             userAnalytics.setInitialSlowWaveSleep(userAnalyticsDto.getInitialSlowWaveSleep());
         }
-        if (userAnalyticsDto.getInitialBodyFatPercentage() != 0) {
-            userAnalytics.setInitialBodyFatPercentage(userAnalyticsDto.getInitialBodyFatPercentage());
+        if (userAnalyticsDto.getInitialBodyFat() != 0) {
+            userAnalytics.setInitialBodyFat(userAnalyticsDto.getInitialBodyFat());
         }
-        if (userAnalyticsDto.getCurrentBodyFatPercentage() != 0) {
-            userAnalytics.setCurrentBodyFatPercentage(userAnalyticsDto.getCurrentBodyFatPercentage());
+        if (userAnalyticsDto.getCurrentBodyFat() != 0) {
+            userAnalytics.setCurrentBodyFat(userAnalyticsDto.getCurrentBodyFat());
         }
         if (userAnalyticsDto.getCurrentWeight() != 0) {
             userAnalytics.setCurrentWeight(userAnalyticsDto.getCurrentWeight());
@@ -113,28 +112,28 @@ public class UserAnalyticsService {
         userAnalyticsRepository.save(userAnalytics);
     }
 
-    public UserAnalyticsDto toDto(UserAnalytics ua) {
+    public List<UserAnalyticsDto> toDto(UserAnalytics ua) {
         if (ua == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         UserAnalyticsDto userAnalyticsDto = new UserAnalyticsDto();
         userAnalyticsDto.setCurrentWeight(ua.getCurrentWeight());
         userAnalyticsDto.setInitialWeight(ua.getInitialWeight());
-        userAnalyticsDto.setWeightPercentageIncrease(calculatePercentageIncrease(ua.getInitialWeight(), ua.getCurrentWeight()));
-        userAnalyticsDto.setInitialBodyFatPercentage(ua.getInitialBodyFatPercentage());
-        userAnalyticsDto.setCurrentBodyFatPercentage(ua.getCurrentBodyFatPercentage());
-        userAnalyticsDto.setBodyFatPercentageIncrease(ua.getBodyFatPercentageIncrease());
+        userAnalyticsDto.setWeightIncrease(calculateIncrease(ua.getInitialWeight(), ua.getCurrentWeight()));
+        userAnalyticsDto.setInitialBodyFat(ua.getInitialBodyFat());
+        userAnalyticsDto.setCurrentBodyFat(ua.getCurrentBodyFat());
+        userAnalyticsDto.setBodyFatIncrease(ua.getBodyFatIncrease());
         userAnalyticsDto.setInitialBMI(ua.getInitialBMI());
         userAnalyticsDto.setCurrentBMI(ua.getCurrentBMI());
-        userAnalyticsDto.setBMIPercentageIncrease(calculatePercentageIncrease(ua.getInitialBMI(), ua.getCurrentBMI()));
+        userAnalyticsDto.setBMIIncrease(calculateIncrease(ua.getInitialBMI(), ua.getCurrentBMI()));
         userAnalyticsDto.setWorkOutDaysDone(ua.getWorkOutDaysDone());
         userAnalyticsDto.setInitialLongestWorkout(ua.getInitialLongestWorkout());
         userAnalyticsDto.setCurrentLongestWorkout(ua.getCurrentLongestWorkout());
-        userAnalyticsDto.setLongestWorkOutPercentageIncrease(calculatePercentageIncrease(ua.getInitialLongestWorkout(), ua.getCurrentLongestWorkout()));
+        userAnalyticsDto.setLongestWorkOutIncrease(calculateIncrease(ua.getInitialLongestWorkout(), ua.getCurrentLongestWorkout()));
         userAnalyticsDto.setInitialSlowWaveSleep(ua.getInitialSlowWaveSleep());
         userAnalyticsDto.setCurrentSlowWaveSleep(ua.getCurrentSlowWaveSleep());
-        userAnalyticsDto.setSlowWaveSleepIncrease(calculatePercentageIncrease(ua.getInitialSlowWaveSleep(), ua.getCurrentSlowWaveSleep()));
-        return userAnalyticsDto;
+        userAnalyticsDto.setSlowWaveSleepIncrease(calculateIncrease(ua.getInitialSlowWaveSleep(), ua.getCurrentSlowWaveSleep()));
+        return List.of(userAnalyticsDto);
     }
 }

@@ -11,9 +11,9 @@ public class PlanProgressionController {
     @Autowired
     private PlanProgressionService planProgressionService;
 
-    @GetMapping("updatePlanProgressionDay")
-    public ResponseEntity<PlanProgressionDto> updatePlanProgressionDay(HttpServletRequest request) {
-        return planProgressionService.updatePlanProgressionDay(request);
+    @PostMapping("updatePlanProgressionDay")
+    public ResponseEntity<PlanProgressionDto> updatePlanProgressionDay(HttpServletRequest request, @RequestBody boolean previousDay) {
+        return planProgressionService.updatePlanProgressionDay(request, previousDay);
     }
 
     @DeleteMapping("cancelPlanProgressionByUser")

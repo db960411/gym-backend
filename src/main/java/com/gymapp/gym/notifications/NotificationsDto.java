@@ -1,12 +1,11 @@
 package com.gymapp.gym.notifications;
 
-import lombok.AllArgsConstructor;
+import com.gymapp.gym.fileUpload.Image;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -16,9 +15,9 @@ public class NotificationsDto {
     private String title;
     private String text;
     private NotificationsCategory category;
-    private Date createdAt;
+    private Timestamp createdAt;
     private boolean seen;
-    private String friendImageUrl;
+    private Image friendImage;
     private String friendDisplayName;
     private String friendEmailAdress;
 }

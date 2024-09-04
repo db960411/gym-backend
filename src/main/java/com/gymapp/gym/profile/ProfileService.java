@@ -16,7 +16,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.gymapp.gym.progress.ProgressService.calculatePercentageIncrease;
+import static com.gymapp.gym.progress.ProgressService.calculateIncrease;
 
 @Service
 @RequiredArgsConstructor
@@ -89,7 +89,7 @@ public class ProfileService {
         UserAnalytics userAnalytics = new UserAnalytics();
         userAnalytics.setUser(user);
         userAnalytics.setInitialWeight(profile.getWeight());
-        userAnalytics.setInitialBodyFatPercentage(0);
+        userAnalytics.setInitialBodyFat(0);
         userAnalytics.setInitialBMI(userAnalyticsService.calculateBMI(profile.getWeight(),profile.getHeight()));
         userAnalytics.setCurrentBMI(0);
         userAnalytics.setWorkOutDaysDone(0);
@@ -156,7 +156,7 @@ public class ProfileService {
         UserAnalytics userAnalytics = userAnalyticsService.getByUser(user);
         userAnalytics.setModifiedAt(Date.from(Instant.now()));
         userAnalytics.setCurrentWeight(profileData.getWeight());
-        userAnalytics.setWeightPercentageIncrease(calculatePercentageIncrease(userAnalytics.getInitialWeight(), profileData.getWeight()));
+        userAnalytics.setWeightIncrease(calculateIncrease(userAnalytics.getInitialWeight(), profileData.getWeight()));
         userAnalytics.setCurrentBMI(userAnalyticsService.calculateBMI(profile.getWeight(), profile.getHeight()));
 
         userAnalyticsService.updatedUserAnalyticsForUser(userAnalytics);

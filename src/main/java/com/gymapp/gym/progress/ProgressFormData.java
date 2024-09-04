@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 public class ProgressFormData {
     private String exerciseType;
+    private String exerciseCategory;
     private double sets;
     private double reps;
     private double weight;

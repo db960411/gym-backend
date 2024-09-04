@@ -2,6 +2,7 @@ package com.gymapp.gym.config;
 
 import com.gymapp.gym.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +19,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfig {
 
     private final UserRepository repository;
+    @Value("${DECODE_SECRET_KEY.value}")
+    private String SECRETKEY;
 
+    public String getSecretKey() {
+        return SECRETKEY;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

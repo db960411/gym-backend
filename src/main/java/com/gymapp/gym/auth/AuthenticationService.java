@@ -19,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -68,7 +69,7 @@ public class AuthenticationService {
         socialService.createSocialForUser(user);
         Social social = socialService.getByUserId(user.getId());
 
-        notificationsService.createNotificationForUserSocial(social, null, "Hello and welcome!", "Please check your email! 👋", NotificationsCategory.ADMIN);
+        notificationsService.createNotificationForUserSocial(social, null, "Hello and welcome!", "Please check your email!", NotificationsCategory.ADMIN);
 
         return AuthenticationResponse.builder().successMessage("Registered user successfully").email(user.getEmail()).build();
     }

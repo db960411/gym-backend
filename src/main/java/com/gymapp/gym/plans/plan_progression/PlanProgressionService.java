@@ -17,14 +17,14 @@ public class PlanProgressionService {
 
 
     public PlanProgression getPlanProgressionByUserId(int userId) {
-        return repository.getByUserId(userId);
+        return repository.getByUserIdAndActive(userId, true);
     };
 
-     public void deletePlanProgressionById(int userId) {
-         repository.deleteById(userId);
+     public void deletePlanProgressionById(int progressionId) {
+         repository.deleteById(progressionId);
      }
 
-     public ResponseEntity<PlanProgressionDto> updatePlanProgressionDay(HttpServletRequest request) {
+     public ResponseEntity<PlanProgressionDto> updatePlanProgressionDay(HttpServletRequest request, boolean previousDay) {
          final String email = request.getHeader("Email");
          User user = userService.getUserByEmail(email);
 
@@ -32,7 +32,7 @@ public class PlanProgressionService {
              return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
          }
 
-         PlanProgression planProgression = repository.getByUserId(user.getId());
+         PlanProgression planProgression = repository.getByUserIdAndActive(user.getId(), true);
 
          if (planProgression == null) {
              return ResponseEntity.badRequest().build();
@@ -40,11 +40,17 @@ public class PlanProgressionService {
 
          PlanProgressionDto planProgressionDto = new PlanProgressionDto();
 
-         if (planProgression.getDay() < 30) {
+         if (previousDay) {
+             planProgression.setDay(planProgression.getDay() - 1);
+             repository.save(planProgression);
+         }
+         else if (planProgression.getDay() < 30) {
              planProgression.setDay(planProgression.getDay() + 1);
              repository.save(planProgression);
          } else {
              planProgressionDto.setCompleted(true);
+             planProgression.setCompleted(true);
+             repository.save(planProgression);
              return ResponseEntity.status(HttpStatus.OK).body(planProgressionDto);
          }
 

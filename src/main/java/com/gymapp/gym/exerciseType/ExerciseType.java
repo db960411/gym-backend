@@ -19,4 +19,5 @@ public class ExerciseType {
     UUID id;
 
     private String name;
+    private String category;
 }

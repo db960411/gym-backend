@@ -32,10 +32,10 @@ public class PlansService {
             throw new UserNotFoundException("No user found for this email: " + email);
         }
 
-        PlanProgression userPlanProgression = planProgressionRepository.getByUserId(user.getId());
+        PlanProgression userPlanProgression = planProgressionRepository.getByUserIdAndActive(user.getId(), true);
 
         if (userPlanProgression != null) {
-            return new PlansResponse.PlansResponseBuilder().day(userPlanProgression.getDay()).plan(userPlanProgression.getPlan()).successMessage(userPlanProgression.getPlan().getName()).build();
+            return new PlansResponse.PlansResponseBuilder().active(userPlanProgression.isActive()).completed(userPlanProgression.isCompleted()).day(userPlanProgression.getDay()).plan(userPlanProgression.getPlan()).successMessage(userPlanProgression.getPlan().getName()).build();
         }
 
         return new PlansResponse.PlansResponseBuilder().errorMessage("Not on a plan").build();
@@ -59,8 +59,7 @@ public class PlansService {
             this.userService.determineLevelForUser(user);
         }
 
-        this.planProgressionRepository.delete(userPlanProgression);
-
+        userPlanProgression.setActive(false);
         return new PlansResponse.PlansResponseBuilder().day(userPlanProgression.getDay()).plan(userPlanProgression.getPlan()).successMessage("User completed plan successfully!").build();
     }
 
@@ -78,14 +77,14 @@ public class PlansService {
             throw new NullPointerException("Selected plan doesn't exist: " + selectedPlan);
         }
 
-        PlanProgression userPlanProgression = planProgressionRepository.getByUserId(user.getId());
+        PlanProgression userPlanProgression = planProgressionRepository.getByUserIdAndActive(user.getId(), true);
 
         if (userPlanProgression != null && userPlanProgression.getPlan().getName().equals(selectedPlan)) {
           return new PlansResponse.PlansResponseBuilder().errorMessage("User already assigned to a plan " + userPlanProgression.getPlan().getName()).build();
         }
 
         if (userPlanProgression == null) {
-            PlanProgression planProgression = PlanProgression.builder().user(user).plan(planBySelectedPlan).day(1).build();
+            PlanProgression planProgression = PlanProgression.builder().user(user).plan(planBySelectedPlan).day(1).active(true).build();
             planProgressionRepository.save(planProgression);
         }
 

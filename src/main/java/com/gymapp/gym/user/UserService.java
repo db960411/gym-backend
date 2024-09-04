@@ -1,6 +1,7 @@
 package com.gymapp.gym.user;
 
 import com.gymapp.gym.JWT.JwtService;
+import com.gymapp.gym.fileUpload.Image;
 import com.gymapp.gym.profile.Profile;
 import com.gymapp.gym.profile.ProfileDto;
 import com.gymapp.gym.profile.ProfileService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,6 +30,8 @@ public class UserService {
     private final JwtService jwtService;
     @Autowired
     private ProfileService profileService;
+    @Autowired
+    private SocialService socialService;
 
     public User getUserByEmail(@NonNull String email) {
         return repo.getUserByEmail(email);
@@ -45,7 +49,8 @@ public class UserService {
         userDto.setEmail(email);
         userDto.setLevel(user.getLevel());
         userDto.setRole(user.getRole());
-        userDto.setProfileImageUrl(user.getProfileImageUrl());
+        userDto.setImage(user.getImage());
+        userDto.setSocialId(socialService.getByUserId(user.getId()).getId());
 
         Profile profile = profileService.getByUserId(user.getId());
         if (profile != null) {
@@ -64,22 +69,6 @@ public class UserService {
         return userDto;
     }
 
-    public ResponseEntity<String> updateUserImageUrl(HttpServletRequest request, String profileImageUrl) {
-        final String email = request.getHeader("Email");
-        User user = repo.getUserByEmail(email);
-
-        if (user == null) {
-            throw new RuntimeException("User can't be null when fetching user information");
-        }
-
-        if (profileImageUrl != null) {
-            user.setProfileImageUrl(profileImageUrl);
-            repo.save(user);
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
     public String updateUserEmail(@NonNull User user, @NonNull String newEmail) {
         User userByEmail = repo.getUserByEmail(newEmail);
 
@@ -90,6 +79,12 @@ public class UserService {
             return jwtService.generateToken(user);
         } else {
             return null;
+        }
+    }
+
+    public void saveUserImage(User user) {
+        if (user != null) {
+            this.repo.save(user);
         }
     }
 

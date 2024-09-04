@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -59,7 +62,7 @@ public class ProgressService {
         Profile profile = profileService.getByUserId(user.getId());
 
         if (profile == null) {
-            throw new IllegalAccessException();
+            return Collections.emptyList();
         }
 
         List<Progress> progressList = repository.findByProfileId(profile.getId());
@@ -69,6 +72,9 @@ public class ProgressService {
 
     @NotNull
     private static List<ProgressDto> getProgressDtoList(List<Progress> progressList) {
+        if (progressList.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<ProgressDto> progressDtoList = new ArrayList<>();
         for (Progress progress: progressList) {
             ProgressDto progressDto = new ProgressDto();
@@ -123,7 +129,9 @@ public class ProgressService {
 
         ProgressDto progressDto = getProgressDto(progress);
 
-        notificationsService.addNotificationsToFriendlySendOutQueue(user, user + "added" + progress.getExerciseType().getName() + "progress", NotificationsCategory.PROGRESSION, Date.from(Instant.now()));
+        String profileDisplayName = profile.getDisplayName() != null ?  profile.getDisplayName() : user.getEmail();
+
+        notificationsService.sendNotificationsToSocialsFriends(user, profileDisplayName, "Added new progress " + progress.getExerciseType().getName(), NotificationsCategory.PROGRESSION, Timestamp.from(Instant.now()));
 
         ExerciseAnalytics exerciseAnalytics = getExerciseAnalytics(progress, user);
 
@@ -152,7 +160,6 @@ public class ProgressService {
     private static ExerciseAnalytics getExerciseAnalytics(Progress progress, User user) {
         ExerciseAnalytics exerciseAnalytics = new ExerciseAnalytics();
         exerciseAnalytics.setUser(user);
-        exerciseAnalytics.setExerciseTypeName(progress.getExerciseType().getName());
         exerciseAnalytics.setExerciseType(progress.getExerciseType());
         exerciseAnalytics.setInitialReps(progress.getReps());
         exerciseAnalytics.setInitialSets(progress.getSets());
@@ -217,11 +224,11 @@ public class ProgressService {
         // TODO add distance etc
         ExerciseAnalytics exerciseAnalytics = exerciseAnalyticsService.findByUserAndExerciseType(user, progress.getExerciseType());
         exerciseAnalytics.setCurrentReps(progress.getReps());
-        exerciseAnalytics.setRepsPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialReps(), data.getReps()));
+        exerciseAnalytics.setRepsIncrease(calculateIncrease(exerciseAnalytics.getInitialReps(), data.getReps()));
         exerciseAnalytics.setCurrentSets(progress.getSets());
-        exerciseAnalytics.setSetsPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialSets(), data.getSets()));
+        exerciseAnalytics.setSetsIncrease(calculateIncrease(exerciseAnalytics.getInitialSets(), data.getSets()));
         exerciseAnalytics.setCurrentWeight(progress.getWeight());
-        exerciseAnalytics.setWeightPercentageIncrease(calculatePercentageIncrease(exerciseAnalytics.getInitialWeight(), data.getWeight()));
+        exerciseAnalytics.setWeightIncrease(calculateIncrease(exerciseAnalytics.getInitialWeight(), data.getWeight()));
         exerciseAnalytics.setTime(progress.getTime());
         exerciseAnalytics.setBPM(progress.getHeartRate());
         exerciseAnalytics.setSteps(progress.getSteps());
@@ -246,7 +253,7 @@ public class ProgressService {
         return progressDto;
     }
 
-    public static double calculatePercentageIncrease(double initialValue, double currentValue) {
+    public static double calculateIncrease(double initialValue, double currentValue) {
         if (initialValue == 0 || currentValue == 0) {
             return 0;
         }
@@ -255,10 +262,7 @@ public class ProgressService {
             return 0;
         }
         // Calculate the difference between current value and initial value
-        double difference = currentValue - initialValue;
-
-        // Calculate the percentage increase
-        return Math.floor((difference / initialValue) * 100);
+        return Math.floor(currentValue - initialValue);
     }
 
     public List<Progress> getAllProgressByProfileId(int id) {
@@ -267,7 +271,7 @@ public class ProgressService {
 
     private Progress mapToProgress(ProgressFormData formData) {
         Progress progress = new Progress();
-        ExerciseType exerciseType = exerciseTypeService.getOrCreateExerciseType(formData.getExerciseType());
+        ExerciseType exerciseType = exerciseTypeService.getOrCreateExerciseType(formData.getExerciseType(), formData.getExerciseCategory());
         progress.setExerciseType(exerciseType);
         progress.setSets((int) formData.getSets());
         progress.setReps((int) formData.getReps());

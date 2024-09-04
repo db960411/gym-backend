@@ -251,7 +251,7 @@ public class SocialService {
         userDto.setEmail(user.getEmail());
         userDto.setRole(user.getRole());
         userDto.setLevel(user.getLevel());
-        userDto.setProfileImageUrl(user.getProfileImageUrl());
+        userDto.setImage(user.getImage());
 
         ProfileDto profileDto = new ProfileDto();
         Profile userProfile = profileService.getByUserId(user.getId());
@@ -277,7 +277,7 @@ public class SocialService {
                         senderDto.setEmail(sender.getUser().getEmail());
                         senderDto.setRole(sender.getUser().getRole());
                         senderDto.setLevel(sender.getUser().getLevel());
-                        senderDto.setProfileImageUrl(sender.getUser().getProfileImageUrl());
+                        senderDto.setImage(sender.getUser().getImage());
                         ProfileDto senderProfileDto = new ProfileDto();
                         Profile senderProfile = profileService.getByUserId(sender.getId());
                         if (senderProfile != null) {
@@ -312,7 +312,7 @@ public class SocialService {
                 friendDto.setLevel(friendUser.getLevel());
                 friendDto.setEmail(friendUser.getEmail());
                 friendDto.setRole(friendUser.getRole());
-                friendDto.setProfileImageUrl(friendUser.getProfileImageUrl());
+                friendDto.setImage(friendUser.getImage());
                 SocialFriendsDto socialFriendsDto = new SocialFriendsDto();
                 socialFriendsDto.setUserSocialId(friend.getId());
                 socialFriendsDto.setUserInfo(friendDto);

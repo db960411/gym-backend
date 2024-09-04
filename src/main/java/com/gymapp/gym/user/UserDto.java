@@ -2,6 +2,7 @@ package com.gymapp.gym.user;
 
 
 
+import com.gymapp.gym.fileUpload.Image;
 import com.gymapp.gym.profile.ProfileDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,5 +19,5 @@ public class UserDto {
     private Level level;
     private int socialId;
     private ProfileDto profileDto;
-    private String profileImageUrl;
+    private Image image;
 }

@@ -1,5 +1,6 @@
 package com.gymapp.gym.user;
 
+import com.gymapp.gym.fileUpload.Image;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +29,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     private Level level = Level.BRONZE;
-    private String profileImageUrl;
+
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
     private LocalDateTime createdAt;
 
     @Override

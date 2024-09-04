@@ -1,5 +1,6 @@
 package com.gymapp.gym.notifications;
 
+import com.gymapp.gym.notes.NotesDto;
 import com.gymapp.gym.profile.Profile;
 import com.gymapp.gym.profile.ProfileService;
 import com.gymapp.gym.settings.Settings;
@@ -9,6 +10,7 @@ import com.gymapp.gym.social.SocialService;
 import com.gymapp.gym.user.Role;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserService;
+import com.gymapp.gym.websocket.WSChatHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.WebSocketSession;
 
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -33,11 +41,13 @@ public class NotificationsService {
     private UserService userService;
     @Autowired
     private ProfileService profileService;
-    private Queue<Notifications> notificationQueue = new LinkedList<>();
+    private final Queue<SimpleMailMessage> emailQueue = new LinkedList<>();
     @Autowired
     private SettingsService settingsService;
+    @Autowired
+    private WSChatHandler wsChatHandler;
 
-    public void createNotificationForUserSocial(Social toSocial, Social fromSocial, String title, String text, NotificationsCategory category) {
+    public void createNotificationForUserSocial(Social toSocial, Social fromSocial, String title, String text, NotificationsCategory category)  {
         if (toSocial == null) {
             throw new IllegalArgumentException("Social object is null");
         }
@@ -49,12 +59,12 @@ public class NotificationsService {
         }
 
         Notifications notification = new Notifications();
-        notification.setCreatedAt(Date.from(Instant.now()));
+        notification.setCreatedAt(Timestamp.from(Instant.now()));
         notification.setSocial(toSocial);
+        notification.setFromSocial(fromSocial);
         notification.setText(text);
         notification.setTitle(title);
         notification.setCategory(category);
-        notification.setFromSocial(fromSocial);
 
         notificationsRepository.save(notification);
     }
@@ -90,7 +100,7 @@ public class NotificationsService {
             notificationsDto.setCreatedAt(notification.getCreatedAt());
             notificationsDto.setSeen(notification.isSeen());
             if (notification.getFromSocial() != null) {
-                notificationsDto.setFriendImageUrl(notification.getFromSocial().getUser().getProfileImageUrl());
+                notificationsDto.setFriendImage(notification.getFromSocial().getUser().getImage());
                 notificationsDto.setFriendEmailAdress(notification.getFromSocial().getUser().getEmail());
                 Profile profile = profileService.getProfile(notification.getFromSocial().getUser().getEmail());
 
@@ -143,69 +153,97 @@ public class NotificationsService {
             Notifications notifications = new Notifications();
             notifications.setFromSocial(adminSocial);
             notifications.setSocial(social);
-            notifications.setCreatedAt(Date.from(Instant.now()));
+            notifications.setCreatedAt(Timestamp.from(Instant.now()));
             notifications.setSeen(false);
             notifications.setTitle(notificationsDto.getTitle());
             notifications.setText(notificationsDto.getText());
             notifications.setCategory(NotificationsCategory.ADMIN);
-
             notificationsRepository.save(notifications);
-            notificationQueue.offer(notifications);
+
+            sendWSNotification(adminSocial, social, toDto(notifications, social, "FITSYNC"));
         });
 
 
         return ResponseEntity.ok("Success!");
     }
 
-    public void addNotificationsToFriendlySendOutQueue(User user, String title, NotificationsCategory category, Date createdAt) {
+    public void sendNotificationsToSocialsFriends(User user, @Nullable String profileDisplayName, String title, NotificationsCategory category, Timestamp createdAt) {
         Social social = socialService.getByUserId(user.getId());
 
         if (social == null) {
             throw new RuntimeException();
         }
 
-        social.getFriends().forEach(friend -> {
+        social.getFriends().forEach(friendSocial -> {
             Notifications notification = new Notifications();
             notification.setFromSocial(social);
-            notification.setSocial(friend);
+            notification.setSocial(friendSocial);
             notification.setTitle(title);
             notification.setCategory(category);
             notification.setCreatedAt(createdAt);
-            notificationQueue.offer(notification);
+            notificationsRepository.save(notification);
+
+            sendWSNotification(social, friendSocial, toDto(notification, friendSocial, profileDisplayName));
         });
     }
 
-    public void sendNextNotificationInQueue() {
-        if (!notificationQueue.isEmpty()) {
-            Notifications notification = notificationQueue.peek();
+    public void sendWSNotification(Social social, Social friend, NotificationsDto notificationDto) {
+            wsChatHandler.handleNotification(social, friend, notificationDto);
+            log.warn("Session for social ID {} is null or not open", social.getId());
+    }
+
+    public void sendNextEmailInQueue() {
+        if (!emailQueue.isEmpty()) {
             int maxAttempts = 3;
             int currentAttempt = 0;
             while (currentAttempt < maxAttempts) {
                 try {
-                    notificationsRepository.save(notification);
-                    notificationQueue.poll();
-                    log.info("Created notification from queue");
+                    emailQueue.poll();
+                    log.info("Created email from queue");
                     break;
                 } catch (Exception e) {
                     currentAttempt++;
                     if (currentAttempt >= maxAttempts) {
-                        log.warn("Failed to send notification after multiple attempts: " + e.getMessage());
+                        log.warn("Failed to send email after multiple attempts: " + e.getMessage());
                     } else {
                        log.info("Retry attempt " + currentAttempt + " after failure: " + e.getMessage());
+                            try {
+                                Thread.sleep(1000 * currentAttempt);
+                            } catch (InterruptedException ie) {
+                                Thread.currentThread().interrupt();
+                            }
                     }
                 }
             }
         }
     }
 
-    @Scheduled(cron = "0 */2 * * * ?")
+    public NotificationsDto toDto(Notifications notifications, Social friendSocial, String friendProfileDisplayName) {
+        NotificationsDto dto = new NotificationsDto();
+        dto.setId(notifications.getId());
+        dto.setFriendImage(friendSocial.getUser().getImage());
+        if (friendProfileDisplayName != null) {
+            dto.setFriendDisplayName(friendProfileDisplayName);
+        }
+        dto.setFriendImage(friendSocial.getUser().getImage());
+        dto.setTitle(notifications.getTitle());
+        dto.setText(notifications.getText());
+        dto.setCategory(notifications.getCategory());
+        dto.setCreatedAt(notifications.getCreatedAt());
+        dto.setSeen(notifications.isSeen());
+        dto.setFriendImage(notifications.getSocial().getUser().getImage());
+        dto.setFriendEmailAdress(notifications.getSocial().getUser().getEmail());
+        return dto;
+    }
+
+    @Scheduled(cron = "0 */1 * * * ?")
     public void sendQueuedEmails() {
         int batchSize = 10;
         for (int i = 0; i < batchSize; i++) {
-            if (notificationQueue.isEmpty()) {
+            if (emailQueue.isEmpty()) {
                 break;
             }
-            sendNextNotificationInQueue();
+            sendNextEmailInQueue();
         }
     }
 

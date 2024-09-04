@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS plan_progression (
     user_id INT NOT NULL,
     plan_id INT NOT NULL,
     day INT,
+    completed BOOLEAN NOT NULL DEFAULT FALSE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES _user(id),
     FOREIGN KEY (plan_id) REFERENCES plans(id)
 );

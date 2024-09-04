@@ -32,13 +32,12 @@ public class NotesService {
             throw new RuntimeException("User not found or not authenticated");
         }
 
-        Page<Notes> notesPage;
 
         if (category != null && category.isEmpty()) {
             category = null;
         }
 
-        notesPage = repository.findAllByUserIdAndCategory(user.getId(), category, pageable);
+        Page<Notes> notesPage = repository.findAllByUserIdAndCategory(user.getId(), category, pageable);
 
         long totalNotes = notesPage.getTotalElements();
         Page<NotesDto> notesDtoPage = notesPage.map(Notes::toDto);
@@ -67,7 +66,7 @@ public class NotesService {
 
         repository.save(notes);
 
-        NotesDto notesDto = NotesDto.builder().title(notes.getTitle()).category(notes.getCategory()).content(notes.getContent()).build();
+        NotesDto notesDto = NotesDto.builder().id(notes.getId()).title(notes.getTitle()).category(notes.getCategory()).content(notes.getContent()).build();
 
         return ResponseEntity.ok(notesDto);
     }

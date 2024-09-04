@@ -65,12 +65,12 @@ public class NewsService {
         news.setAuthor("Admin");
         news.setTitle(newsResponse.getTitle());
         news.setBody(newsResponse.getBody());
+        news.setCategory(newsResponse.getCategory());
         if (newsResponse.getImageUrl() != null) {
             news.setImageUrl(newsResponse.getImageUrl());
         } else {
             news.setImageUrl("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Z3ltfGVufDB8fDB8fHww");
         }
-        news.setCategory(news.getCategory());
 
         repository.save(news);
 

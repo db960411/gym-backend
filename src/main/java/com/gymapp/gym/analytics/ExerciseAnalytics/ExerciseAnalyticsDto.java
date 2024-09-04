@@ -12,14 +12,15 @@ import lombok.Setter;
 public class ExerciseAnalyticsDto {
     private double currentReps;
     private double initialReps;
-    private double repsPercentageIncrease;
+    private double repsIncrease;
     private double currentSets;
     private double initialSets;
-    private double setsPercentageIncrease;
+    private double setsIncrease;
     private double currentWeight;
     private double initialWeight;
-    private double weightPercentageIncrease;
+    private double weightIncrease;
     private String exerciseTypeName;
+    private String exerciseTypeCategory;
     private double distance;
     private double time;
     private double steps;

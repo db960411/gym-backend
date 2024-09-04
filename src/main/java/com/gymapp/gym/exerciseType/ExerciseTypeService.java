@@ -8,12 +8,13 @@ public class ExerciseTypeService {
     @Autowired
     private ExerciseTypeRepository repository;
 
-    public ExerciseType getOrCreateExerciseType(String exerciseName) {
+    public ExerciseType getOrCreateExerciseType(String exerciseName, String exerciseCategory) {
         ExerciseType exerciseType = repository.getByName(exerciseName);
 
         if (exerciseType == null) {
             ExerciseType newExerciseType = new ExerciseType();
             newExerciseType.setName(exerciseName);
+            newExerciseType.setCategory(exerciseCategory);
             exerciseType = repository.save(newExerciseType);
         }
 

@@ -5,7 +5,8 @@ import com.gymapp.gym.social.Social;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -31,6 +32,6 @@ public class Notifications {
     private String text;
     @Enumerated(EnumType.STRING)
     private NotificationsCategory category;
-    private Date createdAt;
+    private Timestamp createdAt;
     private boolean seen;
 }

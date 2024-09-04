@@ -28,27 +28,26 @@ public class ExerciseAnalytics {
     @ManyToOne
     @JoinColumn(name = "exercise_type_id")
     private ExerciseType exerciseType;
-    private String exerciseTypeName;
     @Column(name = "initialReps")
     private double initialReps;
     @Column(name = "currentReps")
     private double currentReps;
-    @Column(name = "repsPercentageIncrease")
-    private double repsPercentageIncrease;
+    @Column(name = "repsIncrease")
+    private double repsIncrease;
 
     @Column(name = "initialSets")
     private double initialSets;
     @Column(name = "currentSets")
     private double currentSets;
-    @Column(name = "setsPercentageIncrease")
-    private double setsPercentageIncrease;
+    @Column(name = "setsIncrease")
+    private double setsIncrease;
 
     @Column(name = "initialWeight")
     private double initialWeight;
     @Column(name = "currentWeight")
     private double currentWeight;
-    @Column(name = "weightPercentageIncrease")
-    private double weightPercentageIncrease;
+    @Column(name = "weightIncrease")
+    private double weightIncrease;
 
     @Column(name = "distance")
     private double distance;

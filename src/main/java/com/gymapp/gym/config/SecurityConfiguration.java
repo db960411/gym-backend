@@ -1,7 +1,6 @@
     package com.gymapp.gym.config;
 
     import com.gymapp.gym.JWT.JwtAuthenticatorFilter;
-    import com.gymapp.gym.guestUser.GuestAuthenticationFilter;
     import lombok.RequiredArgsConstructor;
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,6 @@
 
         private final JwtAuthenticatorFilter jwtAuthFilter;
         private final AuthenticationProvider authenticationProvider;
-        private final GuestAuthenticationFilter guestAuthenticationFilter;
 
 
         @Bean
@@ -28,7 +26,9 @@
                     .csrf()
                     .disable()
                     .authorizeHttpRequests()
-                    .requestMatchers("/api/v1/**", "/ws", "/guest/**")
+                    .requestMatchers("/api/v1/news") // Make /api/v1/news public
+                    .permitAll()
+                    .requestMatchers("/api/v1/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
@@ -37,7 +37,6 @@
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .authenticationProvider(authenticationProvider)
-                    .addFilterBefore(guestAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
             return http.build();
