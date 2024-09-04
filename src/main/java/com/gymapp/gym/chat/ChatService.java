@@ -36,7 +36,6 @@ public class ChatService {
     @Autowired
     private WSChatHandler wsChatHandler;
 
-    @Transactional
     public ChatDto handleNewMessageInChat(@RequestHeader("Email") String email, @RequestBody ChatDto chatDto) throws IllegalAccessException, IOException {
         if (email == null || chatDto == null || chatDto.getMessage() == null) {
             throw new IllegalArgumentException("Invalid input: Email or message is null");
