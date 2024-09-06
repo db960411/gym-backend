@@ -99,6 +99,8 @@ public class NotificationsService {
             notificationsDto.setCategory(notification.getCategory());
             notificationsDto.setCreatedAt(notification.getCreatedAt());
             notificationsDto.setSeen(notification.isSeen());
+            notificationsDto.setFromSocialId(social.getId());
+
             if (notification.getFromSocial() != null) {
                 notificationsDto.setFriendImage(notification.getFromSocial().getUser().getImage());
                 notificationsDto.setFriendEmailAdress(notification.getFromSocial().getUser().getEmail());

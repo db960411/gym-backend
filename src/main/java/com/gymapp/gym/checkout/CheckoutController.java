@@ -14,14 +14,10 @@ public class CheckoutController {
     private final CheckoutService service;
 
     @GetMapping("/create-checkout-session")
-    public ResponseEntity<String> createCheckoutSession() {
-        return ResponseEntity.ok(service.getStripeKey());
+    public ResponseEntity<String> createCheckoutSession() throws StripeException {
+        return ResponseEntity.ok(service.createCheckoutSession());
     }
 
-    @PostMapping("/createPaymentIntent")
-    public ResponseEntity<CheckoutResponse> getPaymentIntent(@RequestBody String stripeToken, HttpServletRequest httpServletRequest) throws StripeException, IllegalAccessException {
-        return ResponseEntity.ok(service.createPaymentIntent(stripeToken, httpServletRequest));
-    }
     @GetMapping("/updateUserToSubscribedMember")
     public ResponseEntity<CheckoutResponse> updateUserToSubscribedMember(HttpServletRequest httpServletRequest) throws IllegalAccessException {
         return ResponseEntity.ok(service.updateUserToSubscribedMember(httpServletRequest));

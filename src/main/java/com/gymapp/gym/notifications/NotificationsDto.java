@@ -20,4 +20,5 @@ public class NotificationsDto {
     private Image friendImage;
     private String friendDisplayName;
     private String friendEmailAdress;
+    private int fromSocialId;
 }

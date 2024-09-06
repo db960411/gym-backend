@@ -166,6 +166,8 @@ public class ProgressService {
         exerciseAnalytics.setInitialWeight(progress.getWeight());
         exerciseAnalytics.setDistance(progress.getDistance());
         exerciseAnalytics.setTime(progress.getTime());
+        exerciseAnalytics.setSteps(progress.getSteps());
+        exerciseAnalytics.setBPM(progress.getHeartRate());
         return exerciseAnalytics;
     }
 

@@ -7,10 +7,8 @@ import com.gymapp.gym.subscription.SubscriptionType;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserService;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
-import com.stripe.model.PaymentIntent;
-import com.stripe.param.CustomerCreateParams;
-import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -42,38 +40,34 @@ public class CheckoutService {
         Stripe.apiKey = stripeSecretKey;
     }
 
-    public String getStripeKey() {
-        return stripeSecretKey;
-    }
-
-    public CheckoutResponse createPaymentIntent(String stripeToken, HttpServletRequest request) throws StripeException, IllegalAccessException {
-        final String email = request.getHeader("Email");
-        User user = userService.getUserByEmail(email);
-
-        if (user == null) {
-            throw new IllegalAccessException("No user buy this request");
-        }
-
-        String displayName = profileService.getProfileEmailAdress(user);
-        Customer customer = Customer.create(new CustomerCreateParams.Builder()
-                .setEmail(email)
-                .setName(displayName)
-                .setSource(stripeToken)
-                .build());
-
-        long amount = 15000;
-        String currency = "SEK";
-
-        PaymentIntentCreateParams paymentIntentParams = PaymentIntentCreateParams.builder()
-                .setAmount(amount)
-                .setCurrency(currency)
-                .setReceiptEmail(email)
-                .setCustomer(customer.getId())
+    public String createCheckoutSession() throws StripeException {
+        // Define the line item
+        SessionCreateParams.LineItem lineItem = SessionCreateParams.LineItem.builder()
+                .setPriceData(
+                        SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency("sek")
+                                .setProductData(
+                                        SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                .setName("One Time Payment")
+                                                .build()
+                                )
+                                .setUnitAmount(15000L)  // Amount in cents
+                                .build()
+                )
+                .setQuantity(1L)
                 .build();
 
-        PaymentIntent paymentIntent = PaymentIntent.create(paymentIntentParams);
+        // Define the session creation parameters
+        SessionCreateParams params = SessionCreateParams.builder()
+                .addLineItem(lineItem)
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .setSuccessUrl("https://localhost:4200/success?session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl("https://localhost:4200/cancel")
+                .build();
 
-        return CheckoutResponse.builder().clientSecret(paymentIntent.getClientSecret()).build();
+        // Create the session
+        Session session = Session.create(params);
+        return session.getId();
     }
 
     public CheckoutResponse updateUserToSubscribedMember(@NotNull HttpServletRequest request) throws IllegalAccessException {
