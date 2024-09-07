@@ -25,9 +25,15 @@ public class Chat {
     @JoinColumn(name = "sender_id")
     private Social sender;
 
+    @Column(name = "sender_status")
+    private String senderStatus;
+
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private Social receiver;
+
+    @JoinColumn(name = "receiver_status")
+    private String receiverStatus;
 
     @Column(nullable = false)
     private String message;

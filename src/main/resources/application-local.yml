@@ -15,8 +15,8 @@ resetPassword:
 DECODE_SECRET_KEY:
   value: "dDRCUU1kSzI3WX5uQ3MoRDQpYWVUVDVJoeisraFBuJng="
 
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type: TRACE
-    org.postgresql: DEBUG
+#logging:
+  #level:
+   #org.hibernate.SQL: DEBUG
+    #org.hibernate.type: TRACE
+    #org.postgresql: DEBUG

@@ -1,6 +1,5 @@
 package com.gymapp.gym.social;
 
-import com.gymapp.gym.notifications.Notifications;
 import com.gymapp.gym.notifications.NotificationsCategory;
 import com.gymapp.gym.notifications.NotificationsService;
 import com.gymapp.gym.plans.plan_progression.PlanProgression;
@@ -12,7 +11,6 @@ import com.gymapp.gym.profile.ProfileService;
 import com.gymapp.gym.progress.Progress;
 import com.gymapp.gym.progress.ProgressDto;
 import com.gymapp.gym.progress.ProgressService;
-import com.gymapp.gym.social.friendshipRequest.FriendShipRequestDto;
 import com.gymapp.gym.social.friendshipRequest.FriendshipRequest;
 import com.gymapp.gym.social.friendshipRequest.FriendshipRequestService;
 import com.gymapp.gym.social.friendshipRequest.FriendshipStatus;
@@ -24,12 +22,10 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -100,7 +96,7 @@ public class SocialService {
         return toDto(newSocial);
     }
 
-    public SocialDto addFriendForUser(@NotNull HttpServletRequest request, @RequestBody int friendSocialId) {
+    public SocialDto addFriendForUser(@NotNull HttpServletRequest request, @RequestBody int friendSocialId) throws IOException {
         final String email = request.getHeader("Email");
         User user = userService.getUserByEmail(email);
 
@@ -145,7 +141,7 @@ public class SocialService {
         return toDto(userSocial);
     }
 
-    public SocialDto acceptFriendshipRequestForUser(@NotNull HttpServletRequest request, @RequestBody int friendSocialId) {
+    public SocialFriendsDto acceptFriendshipRequestForUser(@NotNull HttpServletRequest request, @RequestBody int friendSocialId) {
         final String email = request.getHeader("Email");
         User user = userService.getUserByEmail(email);
 
@@ -162,23 +158,23 @@ public class SocialService {
         Social friendSocial = repository.getById(friendSocialId);
 
         if (friendSocial.getId() == null) {
-            return SocialDto.builder().errorMessage("Friend doesn't exist by social id: " + friendSocialId).build();
+            return SocialFriendsDto.builder().errorMessage("Friend doesn't exist by social id: " + friendSocialId).build();
         }
 
         Optional<FriendshipRequest> existingFriendShipRequest = friendshipRequestService.getFriendShipRequestByReceiverAndSender(userSocial, friendSocial);
 
         if (existingFriendShipRequest.isEmpty()) {
-            return SocialDto.builder().errorMessage("No friend request is pending with friend: " + friendSocial.getId()).build();
+            return SocialFriendsDto.builder().errorMessage("No friend request is pending with friend: " + friendSocial.getId()).build();
         }
 
         if (existingFriendShipRequest.get().getStatus().equals(FriendshipStatus.ACCEPTED)) {
-            return SocialDto.builder().errorMessage("You are already friends with this user with social id: " + friendSocial.getId()).build();
+            return SocialFriendsDto.builder().errorMessage("You are already friends with this user with social id: " + friendSocial.getId()).build();
         }
 
        FriendshipRequest friendshipRequest = friendshipRequestService.acceptFriendshipRequestByUsers(userSocial.getId(), friendSocial.getId());
 
         if (friendshipRequest == null) {
-            return SocialDto.builder().errorMessage("There is no friend request pending").build();
+            return SocialFriendsDto.builder().errorMessage("There is no friend request pending").build();
         }
 
         userSocial.getFriends().add(friendSocial);
@@ -188,7 +184,7 @@ public class SocialService {
         repository.save(friendSocial);
         notificationsService.createNotificationForUserSocial(friendSocial, userSocial," Accepted your friend request.", null, NotificationsCategory.SOCIAL);
 
-        return toDto(userSocial);
+        return toSocialFriendsDto(friendSocial);
     }
 
 
@@ -237,6 +233,25 @@ public class SocialService {
         return repository.findAll();
     }
 
+    private SocialFriendsDto toSocialFriendsDto(Social friendSocial) {
+        SocialFriendsDto socialFriendsDto = new SocialFriendsDto();
+        socialFriendsDto.setUserSocialId(friendSocial.getId());
+        UserDto senderDto = new UserDto();
+        senderDto.setSocialId(friendSocial.getId());
+        senderDto.setEmail(friendSocial.getUser().getEmail());
+        senderDto.setRole(friendSocial.getUser().getRole());
+        senderDto.setLevel(friendSocial.getUser().getLevel());
+        senderDto.setImage(friendSocial.getUser().getImage());
+        ProfileDto senderProfileDto = new ProfileDto();
+        Profile senderProfile = profileService.getByUserId(friendSocial.getId());
+        if (senderProfile != null) {
+            senderProfileDto.setDisplayName(senderProfile.getDisplayName());
+        }
+        senderDto.setProfileDto(senderProfileDto);
+        socialFriendsDto.setUserInfo(senderDto);
+
+        return socialFriendsDto;
+    }
 
     public SocialDto toDto(Social social) {
         if (social == null) {
@@ -265,11 +280,10 @@ public class SocialService {
             socialDto.setProfileInfo(profileDto);
         }
 
-        Set<FriendshipRequest> allFriendRequests = friendshipRequestService.getFriendRequestsByUserAndStatus(social.getId(), FriendshipStatus.PENDING);
+        List<FriendshipRequest> allFriendRequests = friendshipRequestService.getFriendRequestsByUserAndStatus(social.getId(), FriendshipStatus.PENDING);
 
         if (!allFriendRequests.isEmpty()) {
-            FriendShipRequestDto friendShipRequestDto = new FriendShipRequestDto();
-            Set<UserDto> senderDtos = allFriendRequests.stream()
+           List<UserDto> listOfFriendRequests = allFriendRequests.stream()
                     .map(FriendshipRequest::getSender)
                     .map(sender -> {
                         UserDto senderDto = new UserDto();
@@ -285,11 +299,9 @@ public class SocialService {
                         }
                         senderDto.setProfileDto(senderProfileDto);
                         return senderDto;
-                    })
-                    .collect(Collectors.toSet());
+                    }).toList();
 
-            friendShipRequestDto.setUserInfo(senderDtos);
-            socialDto.setFriendRequests(friendShipRequestDto);
+            socialDto.setFriendRequests(listOfFriendRequests);
         }
 
         PlanProgression userPlanProgression = planProgressionService.getPlanProgressionByUserId(user.getId());

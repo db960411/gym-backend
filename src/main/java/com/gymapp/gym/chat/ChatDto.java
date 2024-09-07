@@ -14,7 +14,9 @@ import java.sql.Timestamp;
 @Getter
 public class ChatDto {
     private int sender;
+    private String senderStatus;
     private int receiver;
+    private String receiverStatus;
     private String message;
     private Timestamp timestamp;
     private String status;

@@ -48,7 +48,7 @@ public class CheckoutService {
                                 .setCurrency("sek")
                                 .setProductData(
                                         SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                .setName("One Time Payment")
+                                                .setName("Standard Membership")
                                                 .build()
                                 )
                                 .setUnitAmount(15000L)  // Amount in cents
@@ -61,8 +61,8 @@ public class CheckoutService {
         SessionCreateParams params = SessionCreateParams.builder()
                 .addLineItem(lineItem)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("https://localhost:4200/success?session_id={CHECKOUT_SESSION_ID}")
-                .setCancelUrl("https://localhost:4200/cancel")
+                .setSuccessUrl("http://localhost:4200/success?session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl("http://localhost:4200/checkout")
                 .build();
 
         // Create the session

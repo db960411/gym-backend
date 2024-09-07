@@ -6,6 +6,7 @@ import com.gymapp.gym.social.SocialRepository;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserRepository;
 import com.gymapp.gym.websocket.WSChatHandler;
+import com.gymapp.gym.websocket.WSHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,8 @@ public class ChatService {
     private UserRepository userRepository;
     @Autowired
     private SocialRepository socialRepository;
+    @Autowired
+    private WSHandler wsHandler;
     @Autowired
     private WSChatHandler wsChatHandler;
 
@@ -70,13 +73,15 @@ public class ChatService {
                 .timestamp(new Timestamp(System.currentTimeMillis()))
                 .status("sent")
                 .type("text")
+                .receiverStatus(null)
+                .senderStatus("sent")
                 .build();
 
         chatRepository.save(chat);
 
-            WebSocketSession session = wsChatHandler.getUserSessions().get(senderSocial.getId());
+            WebSocketSession session = wsHandler.getUserSessions().get(senderSocial.getId());
             if (session != null && session.isOpen()) {
-                wsChatHandler.handleChatMessage(chatDto);
+                wsHandler.handleChatMessage(chatDto);
             } else {
                 log.warn("Session for social ID {} is null or not open", senderSocial.getId());
             }
@@ -109,7 +114,6 @@ public class ChatService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
 
-        // Retrieve paginated messages
         Page<Chat> pagedMessages = chatRepository.findAllBySenderIdAndReceiverIdOrSenderIdAndReceiverId(
                 currentSocial.getId(),
                 friendSocial.getId(),
@@ -120,6 +124,30 @@ public class ChatService {
 
         return pagedMessages.stream().map(this::toChatDto).collect(Collectors.toList());
     }
+
+    @Transactional
+    public Boolean updateChatMessagesStatuses(String email, ChatDto chatDto) throws IllegalAccessException {
+        User user = userRepository.getUserByEmail(email);
+
+        if (user == null) {
+            throw new IllegalAccessException("User not found when trying to update status for messages");
+        }
+
+        List<Chat> allMessagesForChat = chatRepository.findAllBySenderIdAndReceiverIdAndStatus(chatDto.getSender(), chatDto.getReceiver(), "sent");
+
+        if (allMessagesForChat.isEmpty()) {
+            return false;
+        }
+
+        allMessagesForChat.forEach(i -> i.setReceiverStatus("seen"));
+
+        chatRepository.saveAll(allMessagesForChat);
+
+        wsChatHandler.handleChatReceiverStatus(chatDto.getReceiver(), chatDto.getSender());
+
+        return true;
+    }
+
     private ChatDto toChatDto(Chat chat) {
         if (chat == null) {
             return null;
@@ -131,7 +159,8 @@ public class ChatService {
         chatDto.setTimestamp(chat.getTimestamp());
         chatDto.setStatus(chat.getStatus());
         chatDto.setType(chat.getType());
-
+        chatDto.setReceiverStatus(chat.getReceiverStatus());
+        chatDto.setSenderStatus(chat.getSenderStatus());
         return chatDto;
     }
 }

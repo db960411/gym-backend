@@ -1,7 +1,9 @@
 CREATE TABLE IF NOT EXISTS chat (
     id INT PRIMARY KEY NOT NULL,
     sender_id INT NOT NULL,
+    sender_status VARCHAR(50) DEFAULT 'text',
     receiver_id INT,
+    receiver_status VARCHAR(50) DEFAULT 'text',
     message TEXT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50) DEFAULT 'sent',

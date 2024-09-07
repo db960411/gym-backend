@@ -11,6 +11,8 @@ import java.util.UUID;
 public interface ChatRepository extends JpaRepository<Chat, UUID> {
 
     List<Chat> findAllBySenderIdAndReceiverId(int senderId, int receiverId);
+    List<Chat> findAllBySenderIdAndReceiverIdAndStatus(int senderId, int receiverId, String status);
+
 
     Page<Chat> findAllBySenderIdAndReceiverIdOrSenderIdAndReceiverId(Integer senderId, Integer receiverId, Integer receiverId2, Integer senderId2, Pageable pageable);
 

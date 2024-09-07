@@ -2,13 +2,13 @@ package com.gymapp.gym.social;
 
 import com.gymapp.gym.plans.plan_progression.PlanProgressionDto;
 import com.gymapp.gym.profile.ProfileDto;
-import com.gymapp.gym.social.friendshipRequest.FriendShipRequestDto;
 import com.gymapp.gym.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -22,7 +22,7 @@ public class SocialDto {
     private ProfileDto profileInfo;
     private String errorMessage;
     private PlanProgressionDto planProgressionDto;
-    private FriendShipRequestDto friendRequests;
+    private List<UserDto> friendRequests;
 }
 
 

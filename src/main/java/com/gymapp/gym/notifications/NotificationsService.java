@@ -1,6 +1,5 @@
 package com.gymapp.gym.notifications;
 
-import com.gymapp.gym.notes.NotesDto;
 import com.gymapp.gym.profile.Profile;
 import com.gymapp.gym.profile.ProfileService;
 import com.gymapp.gym.settings.Settings;
@@ -10,7 +9,7 @@ import com.gymapp.gym.social.SocialService;
 import com.gymapp.gym.user.Role;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserService;
-import com.gymapp.gym.websocket.WSChatHandler;
+import com.gymapp.gym.websocket.WSHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -45,7 +41,7 @@ public class NotificationsService {
     @Autowired
     private SettingsService settingsService;
     @Autowired
-    private WSChatHandler wsChatHandler;
+    private WSHandler wsHandler;
 
     public void createNotificationForUserSocial(Social toSocial, Social fromSocial, String title, String text, NotificationsCategory category)  {
         if (toSocial == null) {
@@ -190,7 +186,7 @@ public class NotificationsService {
     }
 
     public void sendWSNotification(Social social, Social friend, NotificationsDto notificationDto) {
-            wsChatHandler.handleNotification(social, friend, notificationDto);
+            wsHandler.handleNotification(social, friend, notificationDto);
             log.warn("Session for social ID {} is null or not open", social.getId());
     }
 

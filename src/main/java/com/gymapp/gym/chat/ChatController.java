@@ -24,4 +24,9 @@ public class ChatController {
         return ResponseEntity.ok(this.chatService.getAllMessagesByChat(email, friendSocialId, page, size));
     }
 
+    @PatchMapping("/updateChatMessagesStatus")
+    private ResponseEntity<Boolean> updateChatMessagesStatuses(@RequestHeader String email, @RequestBody ChatDto chatDto) throws IllegalAccessException, IOException {
+        return ResponseEntity.ok(this.chatService.updateChatMessagesStatuses(email, chatDto));
+    }
+
 }

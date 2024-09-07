@@ -1,6 +1,6 @@
 package com.gymapp.gym;
 
-import com.gymapp.gym.websocket.WSChatHandler;
+import com.gymapp.gym.websocket.WSHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,8 +16,8 @@ class GymApplicationTests {
 
     @Test
     public void testSingletonWebsocketHandler() {
-        WSChatHandler handler1 = context.getBean(WSChatHandler.class);
-        WSChatHandler handler2 = context.getBean(WSChatHandler.class);
+        WSHandler handler1 = context.getBean(WSHandler.class);
+        WSHandler handler2 = context.getBean(WSHandler.class);
         assertSame(handler1, handler2);
     }
 

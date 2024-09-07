@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -21,12 +22,12 @@ public class SocialController {
     }
 
     @PostMapping("/add-friend")
-    public ResponseEntity<SocialDto> addFriendForUser(HttpServletRequest request, @RequestBody int friendSocialId) {
+    public ResponseEntity<SocialDto> addFriendForUser(HttpServletRequest request, @RequestBody int friendSocialId) throws IOException {
         return ResponseEntity.ok(socialService.addFriendForUser(request, friendSocialId));
     }
 
     @PostMapping("/accept-friend")
-    public ResponseEntity<SocialDto> acceptFriendForUser(HttpServletRequest request, @RequestBody int friendSocialId) {
+    public ResponseEntity<SocialFriendsDto> acceptFriendForUser(HttpServletRequest request, @RequestBody int friendSocialId) {
         return ResponseEntity.ok(socialService.acceptFriendshipRequestForUser(request, friendSocialId));
     }
 
