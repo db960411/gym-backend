@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-crca1vi3esus739brtig-a.frankfurt-postgres.render.com/fitsync_jx4r
-    username: danielbernhardt
-    password: RbBGKRkXqtA4WvpGpqpEps35Ebeu0TXv
+    url: jdbc:postgresql://dpg-csofm3ij1k6c73bfsna0-a.frankfurt-postgres.render.com/active_planet_q6i0
+    username: active_planet_q6i0_user
+    password: 9p9mQd5K2IApC1OHyc8u6AUDJkiPZ8NG
     driver-class-name: org.postgresql.Driver
     hikari:
       auto-commit: false
