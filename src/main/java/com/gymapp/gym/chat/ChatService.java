@@ -21,7 +21,9 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -133,19 +135,43 @@ public class ChatService {
             throw new IllegalAccessException("User not found when trying to update status for messages");
         }
 
-        List<Chat> allMessagesForChat = chatRepository.findAllBySenderIdAndReceiverIdAndStatus(chatDto.getSender(), chatDto.getReceiver(), "sent");
+        Social social = socialRepository.getByUserId(user.getId());
 
-        if (allMessagesForChat.isEmpty()) {
-            return false;
+        if (social.getId() == chatDto.getReceiver()) {
+            List<Chat> allMessagesForChat = chatRepository.findAllBySenderIdAndReceiverIdAndStatus(chatDto.getSender(), chatDto.getReceiver(), "sent");
+
+            if (allMessagesForChat.isEmpty()) {
+                return false;
+            }
+
+            allMessagesForChat.forEach(i -> i.setReceiverStatus("seen"));
+
+            chatRepository.saveAll(allMessagesForChat);
+
+            wsChatHandler.handleChatReceiverStatus(chatDto.getReceiver(), chatDto.getSender());
+
+            return true;
         }
 
-        allMessagesForChat.forEach(i -> i.setReceiverStatus("seen"));
+       return false;
+    }
 
-        chatRepository.saveAll(allMessagesForChat);
+    public List<ChatDto> getAllUnreadChatMessagesForUser(String email) {
+        User user = userRepository.getUserByEmail(email);
 
-        wsChatHandler.handleChatReceiverStatus(chatDto.getReceiver(), chatDto.getSender());
+        if (user == null) {
+            throw new RuntimeException("User not found when fetching unread chat messages");
+        }
 
-        return true;
+        Social social = socialRepository.getByUserId(user.getId());
+
+        Optional<List<Chat>> listOfUnreadMessages = chatRepository.findAllByReceiverIdAndReceiverStatus(social.getId(), null);
+
+        return listOfUnreadMessages
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::toChatDto)
+                .toList();
     }
 
     private ChatDto toChatDto(Chat chat) {

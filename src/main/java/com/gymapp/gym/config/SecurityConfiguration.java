@@ -26,7 +26,7 @@
                     .csrf()
                     .disable()
                     .authorizeHttpRequests()
-                    .requestMatchers("/api/v1/news") // Make /api/v1/news public
+                    .requestMatchers("/api/v1/news/**")
                     .permitAll()
                     .requestMatchers("/api/v1/**")
                     .permitAll()

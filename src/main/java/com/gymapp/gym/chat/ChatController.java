@@ -29,4 +29,9 @@ public class ChatController {
         return ResponseEntity.ok(this.chatService.updateChatMessagesStatuses(email, chatDto));
     }
 
+    @GetMapping("/getAllUnreadChatMessagesForUser")
+    private ResponseEntity<List<ChatDto>> getAllUnreadChatMessagesForUser(@RequestHeader String email) {
+        return ResponseEntity.ok(this.chatService.getAllUnreadChatMessagesForUser(email));
+    }
+
 }

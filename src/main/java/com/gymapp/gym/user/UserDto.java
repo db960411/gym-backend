@@ -20,4 +20,5 @@ public class UserDto {
     private int socialId;
     private ProfileDto profileDto;
     private Image image;
+    private String usedFor;
 }

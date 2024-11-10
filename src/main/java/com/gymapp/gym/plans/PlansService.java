@@ -49,7 +49,7 @@ public class PlansService {
             throw new RuntimeException("User not found when completing plan");
         }
 
-       PlanProgression userPlanProgression = planProgressionRepository.getByUserId(user.getId());
+       PlanProgression userPlanProgression = planProgressionRepository.getByUserIdAndActive(user.getId(), true);
 
         if (userPlanProgression == null) {
             throw new RuntimeException("User is not on a plan when trying to complete one");
@@ -60,6 +60,8 @@ public class PlansService {
         }
 
         userPlanProgression.setActive(false);
+        planProgressionRepository.save(userPlanProgression);
+
         return new PlansResponse.PlansResponseBuilder().day(userPlanProgression.getDay()).plan(userPlanProgression.getPlan()).successMessage("User completed plan successfully!").build();
     }
 

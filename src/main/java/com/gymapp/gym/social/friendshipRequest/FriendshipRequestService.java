@@ -6,6 +6,7 @@ import com.gymapp.gym.profile.Profile;
 import com.gymapp.gym.profile.ProfileDto;
 import com.gymapp.gym.profile.ProfileService;
 import com.gymapp.gym.social.Social;
+import com.gymapp.gym.social.SocialFriendsDto;
 import com.gymapp.gym.social.SocialService;
 import com.gymapp.gym.user.User;
 import com.gymapp.gym.user.UserDto;
@@ -85,6 +86,17 @@ public class FriendshipRequestService {
         FriendshipRequest friendshipRequest = optionalFriendshipRequest.get();
 
         friendshipRequest.setStatus(FriendshipStatus.ACCEPTED);
+
+        UserDto userDto = new UserDto();
+        userDto.setSocialId(userSocialId);
+        userDto.setEmail(userSocial.getUser().getEmail());
+        userDto.setImage(userSocial.getUser().getImage());
+        userDto.setLevel(userSocial.getUser().getLevel());
+        userDto.setUsedFor("friendRequestAccepted");
+        SocialFriendsDto socialFriendsDto = new SocialFriendsDto();
+        socialFriendsDto.setUserInfo(userDto);
+        socialFriendsDto.setUserSocialId(userSocialId);
+        websocketHandler.handleAcceptFriendRequest(socialFriendsDto, friendSocialId);
 
         return repository.save(friendshipRequest);
     }

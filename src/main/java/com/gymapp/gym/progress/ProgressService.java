@@ -120,7 +120,7 @@ public class ProgressService {
         Subscription userSubscription = subscriptionService.getByUserId(user.getId());
 
         if (userSubscription.getSubscriptionType().equals(SubscriptionType.BASIC) && allByProfile.size() >= 9) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).build();
         }
 
         Progress progress = mapToProgress(formData);

@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gymapp.gym.chat.ChatDto;
 import com.gymapp.gym.notifications.NotificationsDto;
 import com.gymapp.gym.social.Social;
-import com.gymapp.gym.social.friendshipRequest.FriendShipWSResponse;
+import com.gymapp.gym.social.SocialFriendsDto;
+import com.gymapp.gym.social.friendshipRequest.FriendshipRequest;
 import com.gymapp.gym.user.UserDto;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -96,6 +97,20 @@ public class WSHandler extends TextWebSocketHandler {
             log.info("Sent friend request from senderId {}: to {}", senderId, recipientId);
         } else {
             log.warn("Recipient user ID {} is not connected", recipientId);
+        }
+    }
+
+    public void handleAcceptFriendRequest(SocialFriendsDto socialFriendsDto, int recipientSocialId) {
+        WebSocketSession recipientSession = userSessions.get(recipientSocialId);
+
+        if (recipientSession != null && recipientSession.isOpen()) {
+            try {
+                recipientSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(socialFriendsDto)));
+            } catch (Exception e) {
+                log.error("Error for websocket when accepting friend request {}", e);
+            }
+        } else {
+            log.warn("Sender user ID {} is not connected when accepting friend request", recipientSocialId);
         }
     }
 
