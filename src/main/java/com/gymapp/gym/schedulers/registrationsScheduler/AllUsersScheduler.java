@@ -19,7 +19,7 @@ public class AllUsersScheduler {
     @Autowired
     private AllUsersSummaryRepository allUsersSummaryRepository;
 
-    @Scheduled(cron = "0 0 0 * * SUN")
+    @Scheduled(cron = "0 58 23 * * *")
     public AllUsersSummary countRegisteredSubscriptionsPerWeek() {
         log.info("Running weekly count of users scheduler...");
         LocalDateTime now = LocalDateTime.now();

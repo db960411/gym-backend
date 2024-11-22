@@ -37,7 +37,7 @@ public class DashboardService {
         int dashboardToken = dashboardTokenService.createDashboardTokenForUser(user);
 
         try {
-           // emailService.sendEmail(user.getEmail(), "Your admin dashboard code " + dashboardToken, "Please use this code to login.");
+           emailService.sendEmail(user.getEmail(), "Your admin dashboard code " + dashboardToken, "Please use this code to login.");
         } catch (RuntimeException runtimeException) {
             throw new RuntimeException("Something went wrong when sending email");
         }

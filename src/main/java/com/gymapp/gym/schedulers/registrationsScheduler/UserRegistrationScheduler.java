@@ -19,7 +19,7 @@ public class UserRegistrationScheduler {
     @Autowired
     private UserRegistrationSummaryRepository repository;
 
-    @Scheduled(cron = "0 0 0 * * SUN")
+    @Scheduled(cron = "0 50 23 * * *")
     public UserRegistrationSummary countRegisteredUsersPerWeek() {
         log.info("Running userRegistrationSummary scheduler...");
         LocalDateTime now = LocalDateTime.now();

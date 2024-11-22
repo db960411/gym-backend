@@ -18,7 +18,7 @@ public class SubscriptionsScheduler {
     @Autowired
     private SubscriptionSummaryRepository repository;
 
-    @Scheduled(cron = "0 0 0 * * SUN")
+    @Scheduled(cron = "0 55 23 * * *")
     public SubscriptionSummary countRegisteredSubscriptionsPerWeek() {
         log.info("Running weekly subscriptions scheduler...");
         LocalDateTime now = LocalDateTime.now();
